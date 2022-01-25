@@ -1,0 +1,456 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+subtitle: "Introdução ao raciocínio bayesiano"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+# Introdução {.allowframebreaks}
+
+- Nesta aula, os elementos básicos da abordagem inferencial bayesiana são introduzidos por meio do problema básico de aprender sobre uma proporção populacional.
+- Antes de coletar os dados, temos crenças sobre o valor da proporção e modelamos nossas crenças em termos de uma \structure{distribuição \emph{a priori}}.
+- Após a \structure{observação dos dados}, atualiza-se a crença sobre a proporção calculando a \structure{distribuição \emph{a posteriori}}.
+- \structure{Resumimos} esta distribuição de probabilidade para realizar \structure{inferências}.
+- Além disso, pode-se estar interessado em \structure{prever os resultados} prováveis de uma nova amostra retirada da população.
+
+# Aprendendo sobre uma proporção {.allowframebreaks}
+
+- Suponha que uma pessoa esteja interessada em aprender sobre os __hábitos de sono__ dos estudantes universitários.
+- Ela ouve que os médicos recomendam __oito horas de sono__ para um adulto médio.
+- \structure{Que proporção de estudantes universitários dormem pelo menos oito horas?}
+
+\vspace{0.4cm}
+
+- Aqui pensamos em uma \structure{população} composta por todos os estudantes universitários e $\color{blue}{p}$ representa a proporção dessa população que dorme (em uma noite típica durante a semana) pelo menos oito horas.
+- Estamos interessados em aprender sobre $\color{blue}{p}$.
+
+\framebreak
+
+- O valor de $\color{blue}{p}$ é desconhecido.
+- Sob o ponto de vista bayesiano, as crenças de uma pessoa sobre a incerteza de $\color{blue}{p}$ são representadas por uma distribuição de probabilidade colocada nesse parâmetro.
+- Essa distribuição reflete a opinião subjetiva \emph{a priori} da pessoa sobre valores plausíveis de $\color{blue}{p}$.
+
+\vspace{0.4cm}
+
+- Uma \structure{amostra aleatória} de estudantes de uma determinada universidade será coletada para aprender sobre essa proporção.
+- Mas primeiro o pesquisador faz algumas pesquisas para aprender sobre os hábitos de sono dos estudantes universitários.
+    + Esta pesquisa a ajudará na construção de uma distribuição \emph{a priori}.
+    
+\framebreak
+
+- Com base nessa pesquisa, __a pessoa__ que faz o estudo __acredita que os estudantes__ universitários geralmente __dormem menos de oito horas__ e, portanto, $\color{blue}{p}$ (a proporção que dorme pelo menos oito horas) é provavelmente menor que 0.5.
+- Após alguma reflexão, seu melhor palpite para o valor de $\color{blue}{p}$ é 0.3.
+    + Mas é muito plausível que essa proporção possa ser qualquer valor no intervalo de 0 a 0.5.
+
+\vspace{0.4cm}
+
+- Uma amostra com 27 estudantes é coletada.
+    + Destes, 11 registram que dormiram pelo menos oito horas na noite anterior.
+- Com base nas informações anteriores e nesses dados observados, o pesquisador está interessado em estimar a proporção $\color{blue}{p}$.
+
+<!-- Além disso, ela está interessada em prever o número de alunos que dormem pelo menos oito horas se uma nova amostra de 20 alunos for feita.     -->
+
+\framebreak
+
+- Denote a densidade \emph{a priori} para $\color{blue}{p}$ por $\color{red}{g(p)}$.
+- Se considerarmos um __"sucesso"__ como dormir pelo menos oito horas e tomarmos uma amostra aleatória com $\color{blue}{s}$ sucessos e $\color{blue}{f}$ falhas, então a \structure{função de verossimilhança} é dada por
+
+$$
+L(p) \propto p^s(1 - p)^f,\ 0 < p < 1.
+$$
+
+- A densidade \emph{a posteriori} para $\color{blue}{p}$, pela \structure{regra de Bayes}, é obtida, a menos de uma constante de proporcionalidade, multiplicando a densidade \emph{a priori} pela verossimilhança:
+
+$$
+\color{red}{g(p|\mbox{dados}) \propto g(p)L(p).}
+$$
+
+# Utilizando uma priori discreta {.allowframebreaks}
+
+- Uma \structure{abordagem simples} para avaliar uma distribuição priori para $p$ é escrever uma \structure{lista de valores} de proporção plausíveis e então atribuir \structure{pesos} ($w$) a esses valores.
+
+\begin{table}[]
+\scriptsize
+\begin{tabular}{ccccccccccc}
+\hline
+\color{blue}{$p_i$}    & 0.05   & 0.15   & 0.25   & 0.35   & 0.45   & 0.55   & 0.65  & 0.75  & 0.85 & 0.95 \\ \hline
+\color{blue}{$w(p_i)$} & 1      & 5.2    & 8      & 7.2    & 4.6    & 2.1    & 0.7   & 0.1   & 0    & 0    \\
+\color{blue}{$g(p_i)$} & 0.035 & 0.180 & 0.277 & 0.249 & 0.159 & 0.073 & 0.024 & 0.003 & 0    & 0    \\ \hline
+\end{tabular}
+\end{table}
+
+\framebreak
+
+```{r priori-discreta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+p <- seq(0.05, 0.95, by = 0.1)
+priori <- c(1, 5.2, 8, 7.2, 4.6, 2.1, 0.7, 0.1, 0, 0)
+priori <- priori/sum(priori)
+plot(p, priori,
+     type = "h", col = "red",
+     lwd = 2,
+     ylab = "Distribuição a priori",
+     xaxt = "n", yaxt = "n")
+axis(1, at = p)
+axis(2, at = priori, las = 1, labels = round(priori, 2))
+
+```
+
+\framebreak
+
+- Lembrando que em nosso exemplo, 11 de 27 alunos dormem um número suficiente de horas ($\hat{p} = 0.40$), então $s = 11$ e $f = 16$, e a função de verossimilhança\footnote{Note que a verossimilhança é núcleo de uma densidade beta com parâmetros $s + 1 = 12$ e $f + 1 = 17$.} é
+
+$$
+L(p) \propto p^{11}(1 - p)^{16},\ 0 < p < 1.
+$$
+
+- A distribuição \emph{a posteriori} é obtida, no caso discreto, da seguinte forma
+
+$$
+g(p_i|dados) = \frac{g(p_i)L(p_i)}{\sum_i{g(p_i)L(p_i)}},\ p_i \in \{0.05,0.15, \ldots, 0.95\}.
+$$
+
+## Utilizando uma priori discreta {.allowframebreaks}
+
+```{r posteriori-discreta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+L.prop <- function(p){
+  (p^(11)) * ((1 - p)^(16))
+}
+
+p <- seq(0.05, 0.95, by = 0.1)
+veros <- L.prop(p = p)
+posteriori <- veros * priori
+posteriori <- posteriori/sum(posteriori)
+
+plot(p, posteriori,
+     type = "h", col = "blue",
+     lwd = 2,
+     ylab = "Distribuição a posteriori",
+     xaxt = "n", yaxt = "n")
+axis(1, at = p)
+axis(2, at = posteriori, las = 1, labels = round(posteriori, 2))
+
+```
+
+\framebreak
+
+\begin{table}[]
+\scriptsize
+\begin{tabular}{ccccccc}
+\hline
+\color{blue}{$p_i$}    & 0.25   & 0.35   & 0.45   & 0.55   & 0.65  & 0.75  \\ \hline
+\color{blue}{$g(p_i)$} & 0.277 & 0.249 & 0.159 & 0.073 & 0.024 & 0.003 \\
+\color{blue}{$L(p_i)\times 10^{12}$} & 2389.573 & 9803.072 & 10743.374 & 3939.035 & 443.747 & 9.834 \\
+\color{blue}{$g(p_i|dados)$} & 0.129 & 0.477 & 0.334 & 0.056 & 0.002 & 0.000 \\ \hline
+\end{tabular}
+\end{table}
+
+\vspace{0.4cm}
+
+- Notamos que a maior parte da probabilidade \emph{a posteriori} está concentrada nos valores $p = 0.35$ e $p = 0.45$.
+- Se combinarmos as probabilidades para os três valores mais prováveis, podemos dizer que a probabilidade \emph{a posteriori} de que $p$ caia no conjunto ${0.25, 0.35, 0.45}$ é igual a 0.940.
+
+# Utilizando uma priori beta {.allowframebreaks}
+
+- Como a $p$ é um parâmetro contínuo, uma abordagem alternativa é construir uma densidade $g(p)$ no intervalo $(0, 1)$ que represente as crenças iniciais do pesquisador.
+- Suponha que ele acredite que a proporção tem a mesma probabilidade de ser menor ou maior que $p = 0.3$.
+    + $\Pr(p \leq 0.3) = \Pr(p\geq 0.3)$.
+- Além disso, ela está 90% confiante de que $p$ é menor que 0.5.
+    + $\Pr(p \leq 0.5) = 0.90$.
+
+\framebreak
+
+- Uma \structure{família} conveniente \structure{de densidades} para uma proporção é a \structure{beta}
+
+\begin{align*}
+g(p) &= \frac{1}{B(a,b)} p^{a - 1}(1 - p)^{b - 1}\\
+ &\propto p^{a - 1}(1 - p)^{b - 1},\ p \in (0,1), a > 0, b > 0,
+\end{align*}
+em que $B(a,b) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a + b)}$ é a chamada função beta e $\Gamma(t) = \int_0^{\infty}{u^{t-1}e^{-u}du}, t > 0$ é a função gama\footnote{$\Gamma(a) = (a-1)!$ se $a \in \mathbb{N}$}.
+
+- Os \structure{hiperparâmetros} $\color{red}{a}$ e $\color{red}{b}$ são escolhidos para refletir as crenças \emph{a priori} do pesquisador sobre $p$.
+
+## Utilizando uma priori beta {.allowframebreaks}
+
+```{r priori-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+x <- seq(0, 1, length = 100)
+
+plot(x, dbeta(x, shape1 = 2, shape2 = 10),
+     ylab = 'Densidade', xlab = 'p',
+     type = 'l', col = 'purple', lwd = 2)
+lines(x, dbeta(x, shape1 = 2, shape2 = 2), col = 'red', lwd = 2) 
+lines(x, dbeta(x, shape1 = 5, shape2 = 2), col = 'blue', lwd = 2)
+lines(x, dbeta(x, shape1 = 1, shape2 = 1), col = 'orange', lwd = 2)
+lines(x, dbeta(x, shape1 = 0.3, shape2 = 0.5), col = 'green', lwd = 2)
+
+legend('topright',
+       legend = c('Beta(2, 10)','Beta(2, 2)','Beta(5,2)', 'Beta(1,1)', 'Beta(0.3,0.5)'),
+       lty = c(1,1,1,1,1), , lwd = c(2,2,2,2,2),
+       col=c('purple', 'red', 'blue', 'orange', 'green'),
+       bty = "n")
+
+```
+
+\framebreak
+
+- A \structure{média} de uma distribuição \emph{a priori} beta é $\color{red}{m = a/(a + b)}$ e a \structure{variância} \emph{a priori}  é $\color{red}{v = m(1-m)/(a+b+1)}$
+    + Na prática é difícil para um pesquisador avaliar os valores de $m$ e $v$ para obter os valores dos parâmetros da beta $a$ e $b$.
+    + É mais fácil obter $a$ e $b$ indiretamente por meio de declarações sobre os percentis da distribuição ($p_{0.5} = 0.3$ e $p_{0.9} = 0.5$ corresponde à dist. beta com $a = 3.26$ e $b = 7.19$)\footnote{Veja a função \ttfamily{beta.select} do pacote \ttfamily{LearnBayes} do \ttfamily{R}.}.
+
+## Utilizando uma priori beta {.allowframebreaks}
+
+- Combinando este dist. \emph{a priori} beta com a função de verossimilhança, temos a dist. \emph{a posteriori} __também é beta__\footnote{Este é um exemplo de {\bf análise conjugada}, em que as densidades \emph{a priori} e \emph{a posteriori} têm a mesma forma funcional.} com parâmetros $a + s$ e $b + f$
+
+$$
+g(p|\mbox{dados}) = \propto p^{a + s - 1}(1 - p)^{b + f - 1},\ p \in (0,1),
+$$
+em que $a + s = 3.26 + 11$ e $b + f = 7.19 + 16$.
+
+## Utilizando uma priori beta {.allowframebreaks}
+
+```{r triplot-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+a <- 3.26
+b <- 7.19
+s <- 11
+f <- 16
+
+curve(dbeta(x, a + s, b + f), from = 0, to = 1,
+      xlab = "p",ylab = "Densidade", lty = 1, lwd = 2, col = "blue")
+curve(dbeta(x, s + 1, f + 1), add = TRUE, lty = 2, lwd = 2)
+curve(dbeta(x, a, b), add = TRUE, lty = 3,lwd = 2, col = "red")
+legend("topright", c("Priori", "Verossimilhança", "Posteriori"),
+       lty = c(3,2,1), lwd = c(2,2,2), col = c("red", "black", "blue"),
+       bty = "n")
+
+```
+
+\framebreak
+
+- Existem diferentes maneiras de resumir a distribuição beta \emph{a posteriori} \structure{para fazer inferências sobre a proporção de dorminhocos $p$}.
+- Podemos utilizar a função distribuição acumulad da beta, e a sua inversa, para calcular probabilidades \emph{a posteriori} e construir estimativas intervalares para $p$.
+
+\framebreak
+
+- É provável que a proporção de pessoas com sono pesado seja maior que 0.5?
+    + Isso é respondido calculando a probabilidade \emph{a posteriori} $\Pr(p \geq 0.5|\mbox{dados})$:
+
+```{r ppost-beta, echo=TRUE, message=FALSE, warning=FALSE}
+
+a <- 3.26; b <- 7.19; s <- 11; f <- 16
+
+pbeta(q = 0.5,
+      shape1 = a+s, shape2 = b+f,
+      lower.tail = FALSE)
+
+```
+
+\framebreak
+
+- Uma estimativa de intervalo de 90% para $p$ é encontrada calculando os percentis 5 e 95 da densidade beta:
+
+
+```{r ic-beta, echo=TRUE, message=FALSE, warning=FALSE}
+
+qbeta(p = c(0.05, 0.95),
+      shape1 = a+s, shape2 = b+f)
+
+```
+
+- Um \structure{intervalo de credibilidade} \emph{a posteriori} de 90% para a proporção é (0.256, 0.513).
+
+\framebreak
+
+- Esses resumos são "exatos" porque são baseados em funções `R` para a densidade beta \emph{a posteriori}.
+- Um método alternativo de sumarização de uma densidade \emph{a posteriori} é baseado em \structure{simulação}.
+- Nesse caso, podemos simular um grande número de valores da densidade beta \emph{a posteriori} e resumir a \structure{amostra} (saída) \structure{simulada}.
+
+```{r sim-beta, echo=TRUE, message=FALSE, warning=FALSE}
+
+amostra.post <- rbeta(n = 1000,
+                      shape1 = a+s, shape2 = b+f)
+
+```
+
+\framebreak
+
+```{r hist-post-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+hist(amostra.post,
+     xlab = "p", ylab = "Frequência", main = "",
+     col = "steelblue", border = "white")
+
+```
+
+\framebreak
+
+- A probabilidade de que a proporção seja maior que 0.5 é aproximada (estimada\footnote{estimativa estocástica, ou de Monte Carlo.} usando a proporção de valores simulados neste intervalo
+
+$$
+\frac{1}{M}\sum_{j=1}^M{I(p^{(j)} \geq 0.5)},
+$$
+em que $M$ é o número de valores simulados, $p^{(j)}$ é $j$-ésimo valor simulado da dist. beta ($j = 1,\ldots, M$) com parâmetros $a+s$ e $b+f$ e $I(\cdot)$ é \structure{função indicadora}.
+
+- Note que para $M$ "grande"
+
+$$
+\Pr(p \geq 0.5|\mbox{dados}) = \E[I(p \geq 0.5)|\mbox{dados}] \approx \frac{1}{M}\sum_{j=1}^M{I(p^{(j)} \geq 0.5)}.
+$$
+
+## Utilizando uma priori beta {.allowframebreaks}
+
+- No `R`:
+
+```{r ppost-sim-beta, echo=TRUE, message=FALSE, warning=FALSE}
+
+sum(amostra.post >= 0.5)/1000
+```
+
+- Uma estimativa de intervalo de 90% pode ser estimada pelos 5º e 95º quantis amostrais da amostra simulada:
+
+```{r ic-sim-beta, echo=TRUE, message=FALSE, warning=FALSE}
+
+quantile(x = amostra.post, probs = c(0.05, 0.95))
+
+```
+
+\framebreak
+
+- Observe que esses resumos da densidade \emph{a posteriori} para $p$ baseados em simulação são aproximadamente iguais aos valores exatos baseados em cálculos da distribuição beta.
+- A aproximação melhora conforme aumentamos o número de valores simulados $M$.
+
+# Predição {.allowframebreaks}
+
+- Nós nos concentramos em aprender sobre a proporção populacional de pessoas com sono pesado $p$.
+- Suponha que nosso pesquisador também esteja interessado em \structure{prever} o número de dorminhocos $\tilde{y}$ em uma amostra futura de $m = 20$ alunos.
+
+:::{.block}
+
+### Preditiva a posteriori
+
+- Depois de observarmos os dados e obtermos a distribuição \emph{a posteriori} dos parâmetros, podemos agora usar a distribuição \emph{a posteriori} para gerar \structure{dados futuros} do modelo.
+- Em outras palavras, dada a distribuição \emph{a posteriori} dos parâmetros do modelo, a \structure{distribuição preditiva \emph{a posteriori} nos dá uma indicação de como os dados futuros podem parecer, condicional aos dados ($y$) e o modelo ($L(p)$ e $g(p)$).
+
+:::
+
+\framebreak
+
+- Uma vez que temos a distribuição posteriori $g(p|\mbox{dados}$, podemos derivar as previsões ($\tilde{y}$) com base nessa distribuição:
+
+$$
+f(\tilde{y}|y) = \int{f(\tilde{y},p|y) dp} = \int{f(\tilde{y}|p,y) g(p|y) dp}.
+$$
+ 
+- Assumindo que as observações passadas e futuras são \structure{condicionalmente independentes}, dado $p$, ou seja, $f(\tilde{y}|p,y) = f(\tilde{y}|p)$, nós podemos escrever:
+
+\begin{equation}
+\label{pred.post}
+f(\tilde{y}|y) = \int{f(\tilde{y}|p) g(p|y) dp}.
+\end{equation}
+
+\framebreak
+
+- Na equação \eqref{pred.post}, estamos condicionando  $\tilde{y}$ apenas em $y$, não condicionamos o que não conhecemos ($p$); integramos os parâmetros desconhecidos.
+- Considerando o modelo anterior (\emph{priori} beta), e um modelo adequado para $f(\tilde{y}|p)$ a distribuição binomial, de parâmetros $m = 20$ (ensaios/entrevistados) e $p$ (probabilidade de ter sono "pesado").
+    + Neste caso, podemos integrar analiticamente a equação \eqref{pred.post} e obter uma expressão de forma fechada para a densidade preditiva,
+
+\begin{equation}
+\label{betabin}
+f(\tilde{y}|y) = {m \choose \tilde{y}} \frac{B(a + s + \tilde{y}, b + f + m - \tilde{y})}{B(a + s, b + f)}, \tilde{y} = 0, \ldots, m,
+\end{equation}
+em que $B(a,b)$ é a função beta.
+
+- A distribuição em \eqref{betabin} é conhecida como \structure{beta-binomial}.
+
+\framebreak
+
+```{r beta-binom, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+library(VGAM)
+
+a <- 3.26
+b <- 7.19
+s <- 11
+f <- 16
+m <- 20
+ytilde <- 0:20
+pred <- dbetabinom.ab(x = ytilde, size = m, shape1 = a + s, shape2 = b + f)
+
+plot(ytilde, pred,
+     type = "h", col = "purple",
+     lwd = 2,
+     ylab = "Distribuição preditiva a posteriori",
+     main = "Dist. exata",
+     xlab = expression(tilde(y)),
+     xaxt = "n")
+axis(1, at = ytilde)
+
+
+```
+
+\framebreak
+
+- Uma maneira conveniente de calcular uma densidade preditiva para qualquer distribuição \emph{a priori} é por simulação. Note que \eqref{pred.post} pode ser aproximada por uma média amostral
+
+$$
+f(\tilde{y}|y) = \int{f(\tilde{y}|p) g(p|y) dp} = \E[f(\tilde{y}|p)|y] \approx \frac{1}{M}\sum_j^M{f(\tilde{y}|p^{(j)})}.
+$$
+
+
+- Para obter $\tilde{y}$, primeiro simulamos, digamos, $p^{(j)}$ a partir de $g(p|y)$, e então simulamos $\tilde{y}$ a partir da distribuição binomial $f(\tilde{y}|p^{(j)})$.
+
+```{r sim-beta-binom, echo=TRUE, message=FALSE, warning=FALSE}
+
+M <- 1000000
+
+p <- rbeta(n = M, shape1 = a + s, shape2 = b + f)
+ytilde.sim <- rbinom(n = M, size = m, prob = p)
+
+```
+
+\framebreak
+
+```{r sim-beta-binom-plot, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+freq <- table(ytilde.sim)
+probpred <- freq/sum(freq)
+y <- as.integer(names(freq))
+plot(y, probpred,
+     type = "h", col = "orange",
+     lwd = 2,
+     ylab = "Distribuição preditiva a posteriori",
+     main = "Aproximação Monte Carlo",
+     xlab = expression(tilde(y)),
+     xaxt = "n")
+axis(1, at = y)
+
+```
+
+
+## Próxima aula
+
+- Modelos de parâmetro único;
+- Modelos de múltiplos parâmetros.
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Sejam tod@s bem-vind@s!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Statistically-Insignificant-barras.jpg'))
+
+```
+
