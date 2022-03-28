@@ -4,6 +4,11 @@
 \usepackage{mathtools}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{amsfonts}
+
+\setbeamercolor{math text}{fg=black!15!blue}
+
+\newcommand\beamermathcolor[1]{\color{#1}\setbeamercolor{math text}{fg=#1}}
 
 \newcount\tmpnum
 \def\tallymarks#1{\leavevmode \lower1bp\vbox to9bp{}%

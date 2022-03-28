@@ -43,7 +43,15 @@ date: |
 - Uma \structure{amostra aleatória} de estudantes de uma determinada universidade será coletada para aprender sobre essa proporção.
 - Mas primeiro o pesquisador faz algumas pesquisas para aprender sobre os hábitos de sono dos estudantes universitários.
     + Esta pesquisa a ajudará na construção de uma distribuição \emph{a priori}.
-    
+
+\framebreak
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='100%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'sono_pesado.png'))
+
+```
+
 \framebreak
 
 - Com base nessa pesquisa, __a pessoa__ que faz o estudo __acredita que os estudantes__ universitários geralmente __dormem menos de oito horas__ e, portanto, $\color{blue}{p}$ (a proporção que dorme pelo menos oito horas) é provavelmente menor que 0.5.
@@ -212,7 +220,7 @@ legend('topright',
 - Combinando este dist. \emph{a priori} beta com a função de verossimilhança, temos a dist. \emph{a posteriori} __também é beta__\footnote{Este é um exemplo de {\bf análise conjugada}, em que as densidades \emph{a priori} e \emph{a posteriori} têm a mesma forma funcional.} com parâmetros $a + s$ e $b + f$
 
 $$
-g(p|\mbox{dados}) = \propto p^{a + s - 1}(1 - p)^{b + f - 1},\ p \in (0,1),
+g(p|\mbox{dados}) \propto p^{a + s - 1}(1 - p)^{b + f - 1},\ p \in (0,1),
 $$
 em que $a + s = 3.26 + 11$ e $b + f = 7.19 + 16$.
 
@@ -294,7 +302,7 @@ hist(amostra.post,
 
 \framebreak
 
-- A probabilidade de que a proporção seja maior que 0.5 é aproximada (estimada\footnote{estimativa estocástica, ou de Monte Carlo.} usando a proporção de valores simulados neste intervalo
+- A probabilidade de que a proporção seja maior que 0.5 é aproximada (estimada\footnote{estimativa estocástica, ou de Monte Carlo.}) usando a proporção de valores simulados neste intervalo
 
 $$
 \frac{1}{M}\sum_{j=1}^M{I(p^{(j)} \geq 0.5)},
@@ -339,13 +347,13 @@ quantile(x = amostra.post, probs = c(0.05, 0.95))
 ### Preditiva a posteriori
 
 - Depois de observarmos os dados e obtermos a distribuição \emph{a posteriori} dos parâmetros, podemos agora usar a distribuição \emph{a posteriori} para gerar \structure{dados futuros} do modelo.
-- Em outras palavras, dada a distribuição \emph{a posteriori} dos parâmetros do modelo, a \structure{distribuição preditiva \emph{a posteriori} nos dá uma indicação de como os dados futuros podem parecer, condicional aos dados ($y$) e o modelo ($L(p)$ e $g(p)$).
+- Em outras palavras, dada a distribuição \emph{a posteriori} dos parâmetros do modelo, a \structure{distribuição preditiva \emph{a posteriori}} nos dá uma indicação de como os dados futuros podem parecer, condicional aos dados ($y$) e o modelo ($L(p)$ e $g(p)$).
 
 :::
 
 \framebreak
 
-- Uma vez que temos a distribuição posteriori $g(p|\mbox{dados}$, podemos derivar as previsões ($\tilde{y}$) com base nessa distribuição:
+- Uma vez que temos a distribuição posteriori $g(p|\mbox{dados})$, podemos derivar as previsões ($\tilde{y}$) com base nessa distribuição:
 
 $$
 f(\tilde{y}|y) = \int{f(\tilde{y},p|y) dp} = \int{f(\tilde{y}|p,y) g(p|y) dp}.
@@ -403,7 +411,7 @@ axis(1, at = ytilde)
 - Uma maneira conveniente de calcular uma densidade preditiva para qualquer distribuição \emph{a priori} é por simulação. Note que \eqref{pred.post} pode ser aproximada por uma média amostral
 
 $$
-f(\tilde{y}|y) = \int{f(\tilde{y}|p) g(p|y) dp} = \E[f(\tilde{y}|p)|y] \approx \frac{1}{M}\sum_j^M{f(\tilde{y}|p^{(j)})}.
+f(\tilde{y}|y) = \int{f(\tilde{y}|p) g(p|y) dp} = \E[f(\tilde{y}|p)|y] \approx \frac{1}{M}\sum_{j=1}^M{f(\tilde{y}|p^{(j)})}.
 $$
 
 
@@ -420,11 +428,20 @@ ytilde.sim <- rbinom(n = M, size = m, prob = p)
 
 \framebreak
 
-```{r sim-beta-binom-plot, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+```{r sim-beta-binom-f, echo=TRUE, message=FALSE, warning=FALSE}
 
 freq <- table(ytilde.sim)
 probpred <- freq/sum(freq)
+knitr::kable(probpred)
+
+```
+
+\framebreak
+
+```{r sim-beta-binom-plot, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
 y <- as.integer(names(freq))
+
 plot(y, probpred,
      type = "h", col = "orange",
      lwd = 2,
@@ -436,6 +453,22 @@ axis(1, at = y)
 
 ```
 
+\framebreak
+
+- Com uma amostra da distribuição preditiva podemos avaliar probabilidades de ocorrências de valores futuros e/ou construir intervalos de predição
+
+```{r sim-beta-binom-ip, echo=TRUE, message=FALSE, warning=FALSE}
+
+quantile(x = ytilde.sim,
+         probs = c(.025, .975))
+
+```
+
+## Para casa
+
+- Rodar os códigos dos exemplos de aula.
+    + Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+- Exercício (Moodle).
 
 ## Próxima aula
 

@@ -1,0 +1,429 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+subtitle: "Introdução a computação bayesiana"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+# Métodos Computacionais {.allowframebreaks}
+
+- Como visto, a inferência bayesiana é baseada na aplicação do teorema de Bayes
+
+$$
+g(\theta|\boldsymbol x)=\dfrac{f(\boldsymbol x|\theta)g(\theta)}{\displaystyle\int_\Theta f(\boldsymbol x|\theta)g(\theta)d\theta}= c(\boldsymbol x) f(\boldsymbol x|\theta) g(\theta) \propto f(\boldsymbol x|\theta) g(\theta),
+$$
+
+e na obtenção de __medidas resumo__ dessa distribuição, como $E[\theta|\boldsymbol x]$, intervalos de credibilidade ou probabilidades _a posteriori_.
+
+\framebreak
+
+- A maior dificuldade na aplicação de inferência bayesiana está justamente no cálculo das integrais envolvidas, tanto no cálculo de $f(\boldsymbol x)$ para a obtenção da distribuição _a posteriori_, quanto na obtenção das medidas resumos citadas anteriormente. 
+- Devido a isso, a inferência bayesiana ganhou muito força com o avanço computacional das últimas décadas.
+- Nesta aula discutimos alguns recursos que podem ser utilizados na inferência bayesiana.
+
+\framebreak
+
+- Muitos dos métodos descritos baseiam-se na *Lei dos Grande Números* (LGN).
+
+::: {.block}
+
+### Lei dos Grande Números
+
+Seja $X_1, X_2, \ldots$ uma sequência de variáveis aleatórias $i.i.d.$ com $\E[X_1] = \mu$ e $\Var[X_1] = \sigma^2 < \infty$, então 
+
+$$
+\frac{1}{n} \sum_{i=1}^n X_i {\longrightarrow} \mu.
+$$
+
+:::
+
+\framebreak
+
+- As integrais de interesse serão escritas como o valor esperado de funções de variáveis aleatórias
+
+$$
+\displaystyle \int h(x) dF(x) = \E\left[h(X)\right].
+$$ 
+
+- Deste modo, suponha que $X_1, X_2, \ldots$ é uma sequência de variáveis aleatórias $i.i.d.$ e $h:\mathbb{R} \longrightarrow\mathbb{R}$ é uma função tal que $Var\left[h(X_1)\right]<\infty$. Então, pela *LGN*,
+
+$$
+\frac{1}{n} \sum_{i=1}^n h(X_i) \longrightarrow \E\left[h(X_1)\right].
+$$
+
+# Método de Monte Carlo {.allowframebreaks}
+
+- Suponha que deseja-se calcular 
+
+$$
+\int_\Theta h(\theta)g(\theta|\boldsymbol x)d\theta = \E_g\left[h(\theta)|\boldsymbol x\right]
+$$
+
+e é possível __simular__ realizações ($i.i.d.$) $\{\theta_1,\ldots,\theta_M\}$ da distribuição _a posteriori_ $g(\theta | \boldsymbol x)$.
+
+- Então, a integral acima pode ser aproximada por 
+
+$$
+\frac{1}{M}\sum_{i=1}^M h(\theta_i).
+$$
+
+\framebreak
+
+- A __precisão da aproximação__ é usualmente estimada pelo __erro padrão__ da estimativa
+
+$$
+EP\left[\frac{1}{M}\sum_{i=1}^M{h(\theta_i)}\right] \approx \sqrt{\frac{1}{M}\left( \frac{1}{M}\sum_{i=1}^M{\left[ h(\theta_i) \right]^2} - \left[ \frac{1}{M}\sum_{i=1}^M{h(\theta_i)} \right]^2 \right)}.
+$$
+
+<!-- $$ -->
+<!-- EP\left[\frac{1}{M}\sum_{i=1}^M{h(\theta_i)}\right]\approx \sqrt{\frac{1}{M}\left(\frac{1}{M}\sum_{i=1}^M{\Big[h(\theta_i)\Big]^2} - \left[\frac{1}{M}\sum_{i=1}^M{h(\theta_i)}\right]^2\right)}. -->
+<!-- $$ -->
+
+## Método de Monte Carlo: aproximando $\pi$ {.allowframebreaks}
+
+- Suponha que deseja-se estimar o número $\pi$ usando o método de Monte Carlo. Considere então que o vetor aleatório $(X,Y)$ tem distribuição conjunta uniforme em um quadrado centrado na origem, $\mathfrak{X}=[-1,1]\times[-1,1]$, e um círculo $A$ de raio $1$ inscrito nesse quadrado, $x^2+y^2\leq 1$. 
+
+\framebreak
+
+```{r ex1, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', out.width="90%"}
+
+library(dplyr)
+library(ggplot2)
+
+set.seed(666)
+M = 1000 # número de iterações
+
+df = tibble(t = 1:M,
+            x = runif(length(t),-1, 1),
+            y = runif(length(t),-1, 1)) %>%
+  mutate(
+    Circ = ifelse(x ^ 2 + y ^ 2 <= 1, 1, 0),
+    pi_est = round(4 * cumsum(Circ) / t, 4),
+    erro = round(abs(pi - pi_est), 4),
+    erro_est = round(sqrt((
+      cumsum(16 * Circ) / t - pi_est ^ 2
+    ) / t), 4)
+  )
+
+p <- ggplot() + theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank()
+  ) +
+  ggforce::geom_circle(aes(x0 = 0, y0 = 0, r = 1), color = "black") +
+  geom_rect(aes(
+    xmin = -1,
+    ymin = -1,
+    xmax = 1,
+    ymax = 1
+  ),
+  color = "black",
+  alpha = 0) +
+  guides(color = FALSE)
+
+p + labs(title = expression(paste(
+  "Método de Monte Carlo para a estimação de ", pi
+)))
+
+```  
+
+\framebreak
+
+- Como a distribuição é uniforme no quadrado, a probabilidade de escolher um ponto no círculo é  
+
+\footnotesize
+
+$$
+\Pr(A) = \frac{\mbox{área da círculo}}{\mbox{área do quadrado}} = \frac{\pi}{4} = \int_A f(x,y) dxdy =\int_{\mathfrak{X}} \mathbb{I}_A(x,y) \frac{1}{4}~dxdy = \E\left[\mathbb{I}_A(X,Y)\right].
+$$  
+
+\normalsize
+
+- Suponha que é possível gerar uma amostra $\left\{(x_1,y_1),\ldots,(x_M,y_M)\right\}$ de $(X,Y)$, de modo que podemos aproximar o valor de $\pi$ por  
+
+\footnotesize
+
+$$
+\pi = 4\Pr(A) = \E\left[4\mathbb{I}_A(X,Y)\right] \approx \frac{1}{M}\sum_{i=1}^M 4\mathbb{I}_A(x_i,y_i), \ x_i\stackrel{iid}\sim Unif(-1,1), \ y_i\stackrel{iid}\sim Unif(-1,1).
+$$
+
+\normalsize
+
+- No `R`: `x <- runif(M, -1, 1); y <- runif(M, -1, 1)`.
+
+\framebreak
+
+- Denotando por $\displaystyle t=\sum_{i=1}^M ~\mathbb{I}_A(x_i,y_i)$, o erro estimado é  
+
+\begin{eqnarray*}
+&&\sqrt{\frac{1}{M}\left(\frac{1}{M}\sum_{i=1}^M\Big[4\mathbb{I}(x_i,y_i)\Big]^2 - \left[\frac{1}{M}\sum_{i=1}^M 4\mathbb{I}(x_i,y_i)\right]^2\right)} \\
+&\quad& = \sqrt{\frac{1}{M}\left(\frac{16}{M}t-\left[\frac{4}{M}t\right]^2\right)}\\
+&\quad& = \sqrt{\frac{16}{M} \dfrac{t}{M}\left(1 - \frac{t}{M}\right)} \\
+&\quad& \leq \sqrt{\frac{16}{M}\frac{1}{4}} = \frac{2}{\sqrt{M}}.
+\end{eqnarray*}
+
+\framebreak
+
+```{r ex1-chuva, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', out.width="90%"}
+
+p +
+  geom_point(data = df, aes(x = x, y = y, colour = factor(Circ)), size = 3) +
+  scale_colour_brewer(palette = "Dark2") +
+  labs(title = expression(paste("Método de Monte Carlo para a estimação de ",pi)),
+        subtitle = paste("M = ",df$t[M],"  ;   pi_est = 4*(",cumsum(df$Circ)[M],"/",df$t[M],") = ",df$pi_est[M],"  ;   erro = ",df$erro[M],"  ;   erro_est = ",df$erro_est[M]))
+
+```
+
+\framebreak
+
+```{r ex1-chuva2, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', out.width="90%"}
+
+
+# Estimativas com o aumento do tamanho amostral
+df %>%
+  ggplot(aes(x = t, y = pi_est)) + theme_bw() +
+  geom_line() +
+  geom_hline(yintercept = pi, linetype = "longdash") +
+  geom_ribbon(aes(ymin = pi_est - erro_est, ymax = pi_est + erro_est), alpha =
+                0.3) +
+  xlab("M") +
+  ylab(expression(paste("Estimativa do ", pi)))
+
+```
+
+## Método de Monte Carlo: cálculo {.allowframebreaks}
+
+- Suponha que não sabemos que
+
+$$
+\int_0^1 x^3(1-x)^5e^xdx = 74046 - 27240e \approx 0.0029928.
+$$
+
+- O método de Monte Carlo pode ser utilizado para estimar (aproximar) esta integral.
+
+\framebreak
+
+Vamos considerar duas estratégias:
+
+1. $U \sim Unif (0,1)$ e a integral pode ser escrita como $\E\left[U^3(1-U)^5e^U\right]$.
+
+Ou seja, 
+
+$$
+\E\left[U^3(1-U)^5e^U\right] \approx \displaystyle \frac{1}{M}\sum_{i=1}^M{[u_i^3(1 - u_i)^5e^{u_i}]}, \ u_i \stackrel{iid}\sim Unif(0,1).
+$$
+
+- No `R`: `u <- runif(M, 0, 1)`.
+    
+\framebreak
+
+2. $Y \sim Beta(4,6)$ de modo que
+
+$$
+\displaystyle \int_0^1 y^3(1-y)^5e^y dy = B(4,6)\displaystyle \int_0^1 e^y\frac{y^{4-1}(1-y)^{6-1}}{B(4,6)}~dy = B(4,6)E\left[e^Y\right].
+$$
+
+Ou seja, 
+
+$$
+B(4,6)E\left[e^Y\right] \approx B(4,6) \times \displaystyle \frac{1}{M}\sum_{i=1}^M{[e^{y_i}]}, \ y_i \stackrel{iid}\sim Beta(4,6)
+$$
+
+- No `R`: `y <- rbeta(M, 4, 6)`.
+
+\framebreak
+
+```{r ex2, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', out.width="90%"}
+
+set.seed(666)
+M = 1000 # número de iterações
+theta = 74046 - 27240 * exp(1)
+df = tibble(t = 1:M,
+            u = runif(length(t), 0, 1),
+            y = rbeta(length(t), 4, 6)) %>%
+  mutate(
+    est_u = cumsum(exp(u + 3 * log(u) + 5 * log(1 - u))) / t,
+    est_y = cumsum(exp(lbeta(4, 6) + y)) / t,
+    erro_u = abs(theta - est_u),
+    erro_y = abs(theta - est_y),
+    erro_est_u = sqrt((cumsum(exp(
+      2 * (u + 3 * log(u) + 5 * log(1 - u))
+    )) / t - est_u ^ 2) / t),
+    erro_est_y = sqrt((cumsum(exp(
+      2 * (lbeta(4, 6) + y)
+    )) / t - est_y ^ 2) / t)
+  )
+# Estimativas com o aumento do tamanho amostral
+df %>%
+  ggplot() + theme_bw() +
+  geom_hline(yintercept = theta, linetype = "longdash") +
+  geom_line(aes(x = t, y = est_u, colour = "Uniforme")) +
+  geom_ribbon(
+    aes(
+      x = t,
+      y = est_u,
+      ymin = est_u - erro_est_u,
+      ymax = est_u + erro_est_u,
+      fill = "Uniforme"
+    ),
+    alpha = 0.4
+  ) +
+  geom_line(aes(x = t, y = est_y, colour = "Beta")) +
+  geom_ribbon(
+    aes(
+      x = t,
+      y = est_y,
+      ymin = est_y - erro_est_y,
+      ymax = est_y + erro_est_y,
+      fill = "Beta"
+    ),
+    alpha = 0.4
+  ) +
+  scale_colour_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  theme(legend.position = "bottom") + xlab("M") + ylab("Estimativa") +
+  labs(fill = "Estratégia") + guides(colour = FALSE)
+
+```
+
+## Método de Monte Carlo: aplicações em inf. bayesiana {.allowframebreaks}
+
+```{r echo=FALSE, fig.align='right', message=FALSE, warning=FALSE, out.width='15%', purl=FALSE}
+
+knitr::include_graphics(here('images','laplace_retrato.png'))
+
+```
+
+- Em 1786 Laplace estava interessado em determinar se a probabilidade $\theta$ de um nascimento masculino em Paris durante um certo período de tempo era superior a $0.5$ ou não.
+- Os números oficiais forneceram $y_1 = 251527$ nascimentos do sexo masculino para $y_2 = 241945$ nascimentos do sexo feminino.
+    + A proporção observada foi, portanto, de 0,509.
+
+\framebreak
+
+- Escolhemos uma distribuição uniforme como distribuição _a priori_ para $\theta$ a proporção de nascimentos do sexo masculino.
+    + A distribuição _a posteriori_ é
+
+$$
+g(\theta|y) = Beta(\theta; 251528, 241946).
+$$
+
+\framebreak
+
+- Imagine que não temos a tabela (da distribuição Beta) e estamos interessados na \structure{média \emph{a posteriori}} dessa distribuição.
+- Além disso, imagine que podemos amostrar (usando um computador) um grande número $M$ de amostras independentes $(\theta_i, i = 1, \ldots, M)$ dessa distribuição.
+
+\framebreak
+
+- Pode-se propor o seguinte estimador
+
+$$
+\frac{1}{M}\sum_{i=1}^M{\theta_i}
+$$
+
+como pela lei dos grandes números,
+
+$$
+\lim_{M\to \infty}\frac{1}{M}\sum_{i=1}^M{\theta_i} = \E_{g(\theta|y)}(\theta).
+$$
+
+\framebreak
+
+- Também podemos estimar a \structure{variância \emph{a posteriori}}, pois
+
+$$
+\lim_{M\to \infty}\frac{1}{M}\sum_{i=1}^M{\theta_i^2} = \E_{g(\theta|y)}(\theta^2).
+$$
+
+\framebreak
+
+- Agora considere os seguintes problemas mais desafiadores:
+    + queremos encontrar estimativas da mediana dessa distribuição _a posteriori_, bem como um intervalo de credibilidade de 95%.
+
+- Começamos com a mediana e assumimos que ordenamos as amostras, ou seja, para qualquer $i < j, \theta_i < \theta_j$ e por simplicidade que $M$ é um número par.
+
+\framebreak
+
+- Seja $\overline{\theta}$ a mediana da distribuição _a posteriori_. Então sabemos que
+
+\begin{eqnarray*}
+\Pr(\theta_i \geq \overline{\theta}) = \int_{-\infty}^{\infty}{\mathbb{I}(\overline{\theta} < \theta)g(\theta|y)d\theta} = 1/2\\
+\Pr(\theta_i \leq \overline{\theta}) = \int_{-\infty}^{\infty}{\mathbb{I}(\overline{\theta} > \theta)g(\theta|y)d\theta} = 1/2
+\end{eqnarray*}
+
+de modo que (assumindo por simplicidade que $M$ é par e que ordenamos $(\theta_i, i = 1, \ldots, M)$), é sensato escolher uma estimativa para $\overline{\theta}$ entre $\theta_{N/2}$ e $\theta_{N/2+1}$.
+
+\framebreak
+
+- Agora suponha que estamos procurando por $\theta^{-}$ e $\theta^{+}$ tais que
+
+$$
+\Pr(\theta^{-} \leq \theta \leq \theta^{+}) = \int_{-\infty}^{\infty}{\mathbb{I}(\theta^{-} \leq \theta \leq \theta^{+})g(\theta|y)d\theta} = 0.95
+$$
+ou
+
+$$
+\Pr(0 \leq \theta \leq \theta^{-}) = 0.025\quad \mbox{e} \quad \Pr(\theta^{+} \leq \theta \leq 1) = 0.025
+$$
+
+e assumindo novamente por simplicidade que $M = 1000$ e que as amostras foram ordenadas. Descobrimos que uma estimativa razoável de $\theta^{-}$ está entre $\theta_{25}$ e $\theta_{26}$ e uma estimativa de $\theta^{+}$ entre $\theta_{975}$ e $\theta_{976}$.
+
+\framebreak
+
+- Por fim, podemos estar interessados em calcular
+
+\footnotesize
+
+\begin{eqnarray*}
+\Pr(\theta < 0.5) &=& \int_0^{0.5}{g(\theta|y)d\theta}\\
+&=& \int_0^{1}{I(\theta \leq 0.5)g(\theta|y)d\theta} = \E_{g(\theta|y)}[I(\theta \leq 0.5)] \approx \frac{1}{M}\sum_{i=1}^M{I(\theta_i \leq 0.5)}.
+\end{eqnarray*}
+
+\normalsize
+
+## Método de Monte Carlo: considerações {.allowframebreaks}
+
+- Método baseado no poder computacional.
+- Se sabemos gerar da \structure{distribuição alvo}, facilmente obtemos estimativas de interesse através de resumos amostrais (médias, proporções, estatísticas de ordem, etc.).
+    + Aplicação de resultados probabilísticos: _LGN_, _TCL_.
+- A Alternativa: integração numérica determinística
+    + Veja o `help` das funções em `R` `area`  e `integrate`.
+    + Funciona bem em dimensões baixas (unidimensional).
+    + Geralmente precisa de algum conhecimento da função.
+
+- \structure{Problema} o que fazer quando não for possível gerar diretamente da distribuição alvo?
+
+## Para casa
+
+- Rodar os códigos dos exemplos de aula.
+    + Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+- Exercício (Moodle).
+
+## Próxima aula
+
+- Introdução a computação bayesiana (continuação):
+    + Amostragem por importância;
+    + Método da rejeição;
+    + SIR.
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Bons estudos!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Statistically-Insignificant-final02.jpg'))
+
+```
+

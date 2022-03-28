@@ -1,4 +1,4 @@
-## ----priori-discreta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'------------
+## ----priori-discreta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'----
 
 p <- seq(0.05, 0.95, by = 0.1)
 priori <- c(1, 5.2, 8, 7.2, 4.6, 2.1, 0.7, 0.1, 0, 0)
@@ -13,7 +13,7 @@ axis(2, at = priori, las = 1, labels = round(priori, 2))
 
 
 
-## ----posteriori-discreta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'--------
+## ----posteriori-discreta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'----
 
 L.prop <- function(p){
   (p^(11)) * ((1 - p)^(16))
@@ -34,7 +34,7 @@ axis(2, at = posteriori, las = 1, labels = round(posteriori, 2))
 
 
 
-## ----priori-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'----------------
+## ----priori-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'----
 
 x <- seq(0, 1, length = 100)
 
@@ -54,7 +54,7 @@ legend('topright',
 
 
 
-## ----triplot-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'---------------
+## ----triplot-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'----
 
 a <- 3.26
 b <- 7.19
@@ -71,7 +71,7 @@ legend("topright", c("Priori", "Verossimilhança", "Posteriori"),
 
 
 
-## ----ppost-beta, echo=TRUE, message=FALSE, warning=FALSE-------------------------------------------------------
+## ----ppost-beta, echo=TRUE, message=FALSE, warning=FALSE-----------------------------------------
 
 a <- 3.26; b <- 7.19; s <- 11; f <- 16
 
@@ -81,21 +81,21 @@ pbeta(q = 0.5,
 
 
 
-## ----ic-beta, echo=TRUE, message=FALSE, warning=FALSE----------------------------------------------------------
+## ----ic-beta, echo=TRUE, message=FALSE, warning=FALSE--------------------------------------------
 
 qbeta(p = c(0.05, 0.95),
       shape1 = a+s, shape2 = b+f)
 
 
 
-## ----sim-beta, echo=TRUE, message=FALSE, warning=FALSE---------------------------------------------------------
+## ----sim-beta, echo=TRUE, message=FALSE, warning=FALSE-------------------------------------------
 
 amostra.post <- rbeta(n = 1000,
                       shape1 = a+s, shape2 = b+f)
 
 
 
-## ----hist-post-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'-------------
+## ----hist-post-beta, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'----
 
 hist(amostra.post,
      xlab = "p", ylab = "Frequência", main = "",
@@ -103,18 +103,18 @@ hist(amostra.post,
 
 
 
-## ----ppost-sim-beta, echo=TRUE, message=FALSE, warning=FALSE---------------------------------------------------
+## ----ppost-sim-beta, echo=TRUE, message=FALSE, warning=FALSE-------------------------------------
 
 sum(amostra.post >= 0.5)/1000
 
 
-## ----ic-sim-beta, echo=TRUE, message=FALSE, warning=FALSE------------------------------------------------------
+## ----ic-sim-beta, echo=TRUE, message=FALSE, warning=FALSE----------------------------------------
 
 quantile(x = amostra.post, probs = c(0.05, 0.95))
 
 
 
-## ----beta-binom, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'-----------------
+## ----beta-binom, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'----
 
 library(VGAM)
 
@@ -138,7 +138,7 @@ axis(1, at = ytilde)
 
 
 
-## ----sim-beta-binom, echo=TRUE, message=FALSE, warning=FALSE---------------------------------------------------
+## ----sim-beta-binom, echo=TRUE, message=FALSE, warning=FALSE-------------------------------------
 
 M <- 1000000
 
@@ -147,11 +147,18 @@ ytilde.sim <- rbinom(n = M, size = m, prob = p)
 
 
 
-## ----sim-beta-binom-plot, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'--------
+## ----sim-beta-binom-f, echo=TRUE, message=FALSE, warning=FALSE-----------------------------------
 
 freq <- table(ytilde.sim)
 probpred <- freq/sum(freq)
+knitr::kable(probpred)
+
+
+
+## ----sim-beta-binom-plot, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'----
+
 y <- as.integer(names(freq))
+
 plot(y, probpred,
      type = "h", col = "orange",
      lwd = 2,
@@ -160,5 +167,12 @@ plot(y, probpred,
      xlab = expression(tilde(y)),
      xaxt = "n")
 axis(1, at = y)
+
+
+
+## ----sim-beta-binom-ip, echo=TRUE, message=FALSE, warning=FALSE----------------------------------
+
+quantile(x = ytilde.sim,
+         probs = c(.025, .975))
 
 

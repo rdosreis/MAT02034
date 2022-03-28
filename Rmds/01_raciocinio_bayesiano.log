@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.3) (preloaded format=pdflatex 2021.5.8)  25 JAN 2022 00:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.3) (preloaded format=pdflatex 2021.5.8)  26 JAN 2022 12:21
 entering extended mode
 **C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/output_pdf/01_raciocinio_bayesiano.tex
@@ -959,12 +959,67 @@ Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
 \c@LT@tables=\count340
 \c@LT@chunks=\count341
 \LT@p@ftn=\toks47
-) (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
+) (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen294
+\lightrulewidth=\dimen295
+\cmidrulewidth=\dimen296
+\belowrulesep=\dimen297
+\belowbottomsep=\dimen298
+\aboverulesep=\dimen299
+\abovetopsep=\dimen300
+\cmidrulesep=\dimen301
+\cmidrulekern=\dimen302
+\defaultaddspace=\dimen303
+\@cmidla=\count342
+\@cmidlb=\count343
+\@aboverulesep=\dimen304
+\@belowrulesep=\dimen305
+\@thisruleclass=\count344
+\@lastruleclass=\count345
+\@thisrulewidth=\dimen306
+) (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/latex-tools\array.sty
+Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
+\col@sep=\dimen307
+\ar@mcellbox=\box78
+\extrarowheight=\dimen308
+\NC@list=\toks48
+\extratabsurround=\skip73
+\backup@length=\skip74
+\ar@cellbox=\box79
+) (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+Package: caption 2020/10/26 v3.5g Customizing captions (AR)
+(C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
+Package: caption3 2020/10/21 v2.2e caption3 kernel (AR)
+\captionmargin=\dimen309
+\captionmargin@=\dimen310
+\captionwidth=\dimen311
+\caption@tempdima=\dimen312
+\caption@indent=\dimen313
+\caption@parindent=\dimen314
+\caption@hangindent=\dimen315
+Package caption Info: beamer document class detected.
+
+(C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption-beamer.
+sto
+File: caption-beamer.sto 2020/08/22 v2.0 Adaption of the caption package to the
+ beamer document classes (AR)
+))
+\c@caption@flags=\count346
+\c@continuedfloat=\count347
+Package caption Info: hyperref package is loaded.
+Package caption Info: Hyperref support is turned off
+(caption)             because hyperref has stopped early.
+Package caption Info: longtable package is loaded.
+(C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty
+Package: ltcaption 2020/05/30 v1.4b longtable captions (AR)
+)) (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.st
+y
 Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
-\multirow@colwidth=\skip73
-\multirow@cntb=\count342
-\multirow@dima=\skip74
-\bigstrutjot=\dimen294
+\multirow@colwidth=\skip75
+\multirow@cntb=\count348
+\multirow@dima=\skip76
+\bigstrutjot=\dimen316
 )
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/mathtools\mathtools.sty
 Package: mathtools 2021/04/12 v1.27 mathematical typesetting tools
@@ -975,17 +1030,17 @@ LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 130.
 LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 130.
 LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 130.
 LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 130.
-\g_MT_multlinerow_int=\count343
-\l_MT_multwidth_dim=\dimen295
-\origjot=\skip75
-\l_MT_shortvdotswithinadjustabove_dim=\dimen296
-\l_MT_shortvdotswithinadjustbelow_dim=\dimen297
-\l_MT_above_intertext_sep=\dimen298
-\l_MT_below_intertext_sep=\dimen299
-\l_MT_above_shortintertext_sep=\dimen300
-\l_MT_below_shortintertext_sep=\dimen301
-\xmathstrut@box=\box78
-\xmathstrut@dim=\dimen302
+\g_MT_multlinerow_int=\count349
+\l_MT_multwidth_dim=\dimen317
+\origjot=\skip77
+\l_MT_shortvdotswithinadjustabove_dim=\dimen318
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen319
+\l_MT_above_intertext_sep=\dimen320
+\l_MT_below_intertext_sep=\dimen321
+\l_MT_above_shortintertext_sep=\dimen322
+\l_MT_below_shortintertext_sep=\dimen323
+\xmathstrut@box=\box80
+\xmathstrut@dim=\dimen324
 )
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.
 sty (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.
@@ -995,7 +1050,7 @@ Package: pgf 2020/12/27 v3.1.8b (3.1.8b)
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 shapes.code.tex
 File: pgfmoduleshapes.code.tex 2020/12/27 v3.1.8b (3.1.8b)
-\pgfnodeparttextbox=\box79
+\pgfnodeparttextbox=\box81
 )
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 plot.code.tex
@@ -1004,8 +1059,8 @@ File: pgfmoduleplot.code.tex 2020/12/27 v3.1.8b (3.1.8b)
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
 mp-version-0-65.sty
 Package: pgfcomp-version-0-65 2020/12/27 v3.1.8b (3.1.8b)
-\pgf@nodesepstart=\dimen303
-\pgf@nodesepend=\dimen304
+\pgf@nodesepstart=\dimen325
+\pgf@nodesepend=\dimen326
 )
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
 mp-version-1-18.sty
@@ -1026,10 +1081,10 @@ Package: pgffor 2020/12/27 v3.1.8b (3.1.8b)
 
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
 .tex)
-\pgffor@iter=\dimen305
-\pgffor@skip=\dimen306
-\pgffor@stack=\toks48
-\pgffor@toks=\toks49
+\pgffor@iter=\dimen327
+\pgffor@skip=\dimen328
+\pgffor@stack=\toks49
+\pgffor@toks=\toks50
 ))
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z\tikz.code.tex
@@ -1038,71 +1093,71 @@ Package: tikz 2020/12/27 v3.1.8b (3.1.8b)
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
 aryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2020/12/27 v3.1.8b (3.1.8b)
-\pgf@plot@mark@count=\count344
-\pgfplotmarksize=\dimen307
+\pgf@plot@mark@count=\count350
+\pgfplotmarksize=\dimen329
 )
-\tikz@lastx=\dimen308
-\tikz@lasty=\dimen309
-\tikz@lastxsaved=\dimen310
-\tikz@lastysaved=\dimen311
-\tikz@lastmovetox=\dimen312
-\tikz@lastmovetoy=\dimen313
-\tikzleveldistance=\dimen314
-\tikzsiblingdistance=\dimen315
-\tikz@figbox=\box80
-\tikz@figbox@bg=\box81
-\tikz@tempbox=\box82
-\tikz@tempbox@bg=\box83
-\tikztreelevel=\count345
-\tikznumberofchildren=\count346
-\tikznumberofcurrentchild=\count347
-\tikz@fig@count=\count348
+\tikz@lastx=\dimen330
+\tikz@lasty=\dimen331
+\tikz@lastxsaved=\dimen332
+\tikz@lastysaved=\dimen333
+\tikz@lastmovetox=\dimen334
+\tikz@lastmovetoy=\dimen335
+\tikzleveldistance=\dimen336
+\tikzsiblingdistance=\dimen337
+\tikz@figbox=\box82
+\tikz@figbox@bg=\box83
+\tikz@tempbox=\box84
+\tikz@tempbox@bg=\box85
+\tikztreelevel=\count351
+\tikznumberofchildren=\count352
+\tikznumberofcurrentchild=\count353
+\tikz@fig@count=\count354
 
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 matrix.code.tex
 File: pgfmodulematrix.code.tex 2020/12/27 v3.1.8b (3.1.8b)
-\pgfmatrixcurrentrow=\count349
-\pgfmatrixcurrentcolumn=\count350
-\pgf@matrix@numberofcolumns=\count351
+\pgfmatrixcurrentrow=\count355
+\pgfmatrixcurrentcolumn=\count356
+\pgf@matrix@numberofcolumns=\count357
 )
-\tikz@expandcount=\count352
+\tikz@expandcount=\count358
 
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z/libraries\tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2020/12/27 v3.1.8b (3.1.8b)
 )))
-\tmpnum=\count353
+\tmpnum=\count359
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\\' on input line 182.
+(hyperref)                removing `\\' on input line 189.
 
 
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2021-03-18 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count354
-\l__pdf_internal_box=\box84
+\l__color_backend_stack_int=\count360
+\l__pdf_internal_box=\box86
 ) (01_raciocinio_bayesiano.aux)
 \openout1 = `01_raciocinio_bayesiano.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 188.
-LaTeX Font Info:    ... okay on input line 188.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -1141,17 +1196,17 @@ LaTeX Font Info:    ... okay on input line 188.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count355
-\scratchdimen=\dimen316
-\scratchbox=\box85
-\nofMPsegments=\count356
-\nofMParguments=\count357
-\everyMPshowfont=\toks50
-\MPscratchCnt=\count358
-\MPscratchDim=\dimen317
-\MPnumerator=\count359
-\makeMPintoPDFobject=\count360
-\everyMPtoPDFconversion=\toks51
+\scratchcounter=\count361
+\scratchdimen=\dimen338
+\scratchbox=\box87
+\nofMPsegments=\count362
+\nofMParguments=\count363
+\everyMPshowfont=\toks51
+\MPscratchCnt=\count364
+\MPscratchDim=\dimen339
+\MPnumerator=\count365
+\makeMPintoPDFobject=\count366
+\everyMPtoPDFconversion=\toks52
 )
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -1163,7 +1218,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 fg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 188.
+Package hyperref Info: Link coloring OFF on input line 195.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
@@ -1173,57 +1228,57 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 lestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count361
+\c@section@level=\count367
 )
-LaTeX Info: Redefining \ref on input line 188.
-LaTeX Info: Redefining \pageref on input line 188.
-LaTeX Info: Redefining \nameref on input line 188.
+LaTeX Info: Redefining \ref on input line 195.
+LaTeX Info: Redefining \pageref on input line 195.
+LaTeX Info: Redefining \nameref on input line 195.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 188.
+(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 195.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/lmr/bx/n --> OT1/cmss/b/n on input line 188.
+(Font)                  OT1/lmr/bx/n --> OT1/cmss/b/n on input line 195.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 188.
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 195.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmss/b/n --> OT1/lmss/b/n on input line 188.
+(Font)                  OT1/cmss/b/n --> OT1/lmss/b/n on input line 195.
 \symnumbers=\mathgroup6
 \sympureletters=\mathgroup7
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/lmss/m/n --> T1/lmr/m/n on input line 188.
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 188.
+(Font)                  OT1/lmss/m/n --> T1/lmr/m/n on input line 195.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/lmr/bx/n --> T1/lmss/b/n on input line 188.
+(Font)                  OT1/lmr/bx/n --> T1/lmss/b/n on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  OT1/lmr/bx/n --> T1/lmss/b/n on input line 188.
-LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 188.
+(Font)                  OT1/lmr/bx/n --> T1/lmss/b/n on input line 195.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/lmss/m/n --> T1/lmss/m/n on input line 188.
+(Font)                  OT1/lmss/m/n --> T1/lmss/m/n on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/lmss/bx/n --> T1/lmss/m/n on input line 188.
-LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 188.
+(Font)                  OT1/lmss/bx/n --> T1/lmss/m/n on input line 195.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/lmr/m/it --> T1/lmss/m/it on input line 188.
+(Font)                  OT1/lmr/m/it --> T1/lmss/m/it on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/lmr/bx/it --> T1/lmss/m/it on input line 188.
-LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 188.
+(Font)                  OT1/lmr/bx/it --> T1/lmss/m/it on input line 195.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 188.
+(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 188.
+(Font)                  OT1/lmtt/m/n --> T1/lmtt/m/n on input line 195.
 LaTeX Font Info:    Overwriting symbol font `numbers' in version `bold'
-(Font)                  T1/lmss/m/n --> T1/lmss/b/n on input line 188.
+(Font)                  T1/lmss/m/n --> T1/lmss/b/n on input line 195.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  T1/lmss/m/it --> T1/lmss/b/it on input line 188.
+(Font)                  T1/lmss/m/it --> T1/lmss/b/it on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
-(Font)                  OT1/lmss/b/n --> T1/lmr/b/n on input line 188.
+(Font)                  OT1/lmss/b/n --> T1/lmr/b/n on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  T1/lmss/b/n --> T1/lmss/b/n on input line 188.
+(Font)                  T1/lmss/b/n --> T1/lmss/b/n on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  T1/lmss/m/n --> T1/lmss/b/n on input line 188.
+(Font)                  T1/lmss/m/n --> T1/lmss/b/n on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  T1/lmss/m/it --> T1/lmss/b/it on input line 188.
+(Font)                  T1/lmss/m/it --> T1/lmss/b/it on input line 195.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  T1/lmtt/m/n --> T1/lmtt/b/n on input line 188.
+(Font)                  T1/lmtt/m/n --> T1/lmtt/b/n on input line 195.
 
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/translator\translator-b
 asic-dictionary-English.dict
@@ -1249,14 +1304,14 @@ Dictionary: translator-numbers-dictionary, Language: English
 heorem-dictionary-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 )
-LaTeX Info: Redefining \microtypecontext on input line 188.
+LaTeX Info: Redefining \microtypecontext on input line 195.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 188.
+LaTeX Info: Redefining \showhyphens on input line 195.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1264,20 +1319,22 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
 (01_raciocinio_bayesiano.nav)
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-89.
+96.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 18
-9.
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 19
+6.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 
 LaTeX Font Warning: Font shape `T1/lmss/m/sc' in size <7> not available
-(Font)              Font shape `T1/lmr/m/sc' tried instead on input line 189.
+(Font)              Font shape `T1/lmr/m/sc' tried instead on input line 196.
 
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
@@ -1286,7 +1343,7 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 <logos/ime.png, id=13, 341.275pt x 148.555pt>
 File: logos/ime.png Graphic file (type png)
 <use logos/ime.png>
-Package pdftex.def Info: logos/ime.png  used on input line 189.
+Package pdftex.def Info: logos/ime.png  used on input line 196.
 (pdftex.def)             Requested size: 65.36366pt x 28.45274pt.
 [1{C:/Users/rodri/AppData/Local/MiKTeX/pdftex/config/pdftex.map}
 
@@ -1294,7 +1351,7 @@ Package pdftex.def Info: logos/ime.png  used on input line 189.
 
 ]
 LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 
-216.
+223.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmss.fd
 File: ot1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1303,34 +1360,34 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 2
-16.
+23.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-216.
+223.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-216.
+223.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 216.
+(Font)              <10> on input line 223.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 216.
+(Font)              <7> on input line 223.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 216.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 216
+(Font)              <5> on input line 223.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 223
 .
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 216
+LaTeX Font Info:    Trying to load font information for U+msb on input line 223
 .
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1338,13 +1395,13 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 216.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 223.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <7> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 216.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 223.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 216.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 223.
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 216.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 223.
 
 [3
 
@@ -1352,13 +1409,22 @@ LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10> not available
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 352.
+(Font)              <9> on input line 363.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 352.
+(Font)              <6> on input line 363.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 352.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 363.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <6> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 352.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 363.
+<C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
+34/images/sono_pesado.png, id=57, 963.6pt x 542.025pt>
+File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
+AT02034/images/sono_pesado.png Graphic file (type png)
+<use C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MA
+T02034/images/sono_pesado.png>
+Package pdftex.def Info: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/m
+etodos_bayesianos/MAT02034/images/sono_pesado.png  used on input line 363.
+(pdftex.def)             Requested size: 307.28987pt x 172.84778pt.
 [5
 
 ] [6
@@ -1367,19 +1433,23 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <6> not available
 ] [7
 
 
-] [8
+ <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
+034/images/sono_pesado.png>] [8
 
 
 ] [9
 
+
+] [10
+
 ]
-Overfull \hbox (4.36195pt too wide) in paragraph at lines 407--407
+Overfull \hbox (4.36195pt too wide) in paragraph at lines 418--418
  [] 
  []
 
 <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
 34/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/priori-discreta-1.pdf
-, id=107, 722.7pt x 505.89pt>
+, id=116, 722.7pt x 505.89pt>
 File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
 AT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/priori-discreta-
 1.pdf Graphic file (type pdf)
@@ -1388,26 +1458,26 @@ T02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/priori-discreta-1
 .pdf>
 Package pdftex.def Info: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/m
 etodos_bayesianos/MAT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beam
-er/priori-discreta-1.pdf  used on input line 407.
+er/priori-discreta-1.pdf  used on input line 418.
 (pdftex.def)             Requested size: 291.92444pt x 204.34396pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 407.
+(Font)              <8> on input line 418.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <8> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 407.
-[10
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 418.
+[11
 
-] [11
+] [12
 
 
  <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/priori-discreta-1.pd
-f>] [12
+f>] [13
 
 
 ]
 <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
 34/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/posteriori-discreta-1
-.pdf, id=140, 722.7pt x 505.89pt>
+.pdf, id=150, 722.7pt x 505.89pt>
 File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
 AT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/posteriori-discr
 eta-1.pdf Graphic file (type pdf)
@@ -1416,26 +1486,26 @@ T02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/posteriori-discre
 ta-1.pdf>
 Package pdftex.def Info: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/m
 etodos_bayesianos/MAT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beam
-er/posteriori-discreta-1.pdf  used on input line 438.
+er/posteriori-discreta-1.pdf  used on input line 449.
 (pdftex.def)             Requested size: 291.92444pt x 204.34396pt.
-[13
+[14
 
  <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/posteriori-discreta-
-1.pdf>] [14
+1.pdf>] [15
 
-
-] [15
 
 ] [16
 
 ] [17
 
+] [18
+
 
 ]
 <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
 34/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/priori-beta-1.pdf, id
-=196, 722.7pt x 505.89pt>
+=205, 722.7pt x 505.89pt>
 File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
 AT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/priori-beta-1.pd
 f Graphic file (type pdf)
@@ -1444,16 +1514,16 @@ T02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/priori-beta-1.pdf
 >
 Package pdftex.def Info: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/m
 etodos_bayesianos/MAT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beam
-er/priori-beta-1.pdf  used on input line 520.
+er/priori-beta-1.pdf  used on input line 531.
 (pdftex.def)             Requested size: 291.92444pt x 204.34396pt.
-[18
+[19
 
  <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/priori-beta-1.pdf>] 
-[19
+[20
 
 
-] [20
+] [21
 
 ]
 \openout4 = `01_raciocinio_bayesiano.vrb'.
@@ -1461,7 +1531,7 @@ er/priori-beta-1.pdf  used on input line 520.
 (01_raciocinio_bayesiano.vrb
 <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
 34/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/triplot-beta-1.pdf, i
-d=231, 722.7pt x 505.89pt>
+d=240, 722.7pt x 505.89pt>
 File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
 AT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/triplot-beta-1.p
 df Graphic file (type pdf)
@@ -1474,7 +1544,7 @@ er/triplot-beta-1.pdf  used on input line 3.
 (pdftex.def)             Requested size: 291.92444pt x 204.34396pt.
 <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
 34/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/hist-post-beta-1.pdf,
- id=232, 722.7pt x 505.89pt>
+ id=241, 722.7pt x 505.89pt>
 File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
 AT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/hist-post-beta-1
 .pdf Graphic file (type pdf)
@@ -1485,14 +1555,11 @@ Package pdftex.def Info: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/m
 etodos_bayesianos/MAT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beam
 er/hist-post-beta-1.pdf  used on input line 101.
 (pdftex.def)             Requested size: 291.92444pt x 204.34396pt.
-) [21
+) [22
 
  <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/triplot-beta-1.pdf>]
-[22
-
-
-] [23
+[23
 
 
 ] [24
@@ -1504,9 +1571,12 @@ er/hist-post-beta-1.pdf  used on input line 101.
 ] [26
 
 
+] [27
+
+
  <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/hist-post-beta-1.pdf
->] [27
+>] [28
 
 
 ]
@@ -1517,12 +1587,12 @@ LaTeX Font Info:    Trying to load font information for TS1+lmss on input line
 22.
 (C:\Users\rodri\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmss.fd
 File: ts1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)) [28
-
-] [29
-
+)) [29
 
 ] [30
+
+
+] [31
 
 ]
 \openout4 = `01_raciocinio_bayesiano.vrb'.
@@ -1535,7 +1605,7 @@ Package amsmath Warning: Foreign command \atopwithdelims;
 
 <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
 34/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/beta-binom-1.pdf, id=
-332, 722.7pt x 505.89pt>
+342, 722.7pt x 505.89pt>
 File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
 AT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/beta-binom-1.pdf
  Graphic file (type pdf)
@@ -1548,7 +1618,7 @@ er/beta-binom-1.pdf  used on input line 94.
 (pdftex.def)             Requested size: 291.92444pt x 204.34396pt.
 <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
 34/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/sim-beta-binom-plot-1
-.pdf, id=334, 722.7pt x 505.89pt>
+.pdf, id=344, 722.7pt x 505.89pt>
 File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
 AT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/sim-beta-binom-p
 lot-1.pdf Graphic file (type pdf)
@@ -1557,12 +1627,9 @@ T02034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/sim-beta-binom-pl
 ot-1.pdf>
 Package pdftex.def Info: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/m
 etodos_bayesianos/MAT02034/output_pdf/01_raciocinio_bayesiano_files/figure-beam
-er/sim-beta-binom-plot-1.pdf  used on input line 129.
+er/sim-beta-binom-plot-1.pdf  used on input line 168.
 (pdftex.def)             Requested size: 291.92444pt x 204.34396pt.
-) [31
-
-] [32
-
+) [32
 
 ] [33
 
@@ -1570,21 +1637,35 @@ er/sim-beta-binom-plot-1.pdf  used on input line 129.
 ] [34
 
 
+] [35
+
+
  <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/beta-binom-1.pdf>] [
-35
+36
 
 
-] [36
+] [37
+
+
+] [38
+
+
+] [39
 
 
  <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/output_pdf/01_raciocinio_bayesiano_files/figure-beamer/sim-beta-binom-plot-
-1.pdf>] [37
+1.pdf>] [40
+
+
+] [41
+
+] [42
 
 ]
 <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT020
-34/images/Statistically-Insignificant-barras.jpg, id=409, 105.996pt x 105.996pt
+34/images/Statistically-Insignificant-barras.jpg, id=451, 105.996pt x 105.996pt
 >
 File: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/M
 AT02034/images/Statistically-Insignificant-barras.jpg Graphic file (type jpg)
@@ -1592,9 +1673,9 @@ AT02034/images/Statistically-Insignificant-barras.jpg Graphic file (type jpg)
 T02034/images/Statistically-Insignificant-barras.jpg>
 Package pdftex.def Info: C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/m
 etodos_bayesianos/MAT02034/images/Statistically-Insignificant-barras.jpg  used 
-on input line 870.
+on input line 960.
 (pdftex.def)             Requested size: 153.66113pt x 122.11601pt.
-[38
+[43
 
  <C:/Users/rodri/OneDrive/Documentos/UFRGS/Disciplinas/metodos_bayesianos/MAT02
 034/images/Statistically-Insignificant-barras.jpg>]
@@ -1609,13 +1690,13 @@ on input line 870.
 
 (01_raciocinio_bayesiano.aux) ) 
 Here is how much of TeX's memory you used:
- 27727 strings out of 479321
- 539021 string characters out of 2856584
- 844824 words of memory out of 3000000
- 44273 multiletter control sequences out of 15000+600000
+ 29144 strings out of 479321
+ 566772 string characters out of 2856584
+ 865965 words of memory out of 3000000
+ 45659 multiletter control sequences out of 15000+600000
  495339 words of font info for 166 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 131i,14n,132p,620b,600s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 131i,14n,132p,620b,602s stack positions out of 5000i,500n,10000p,200000b,80000s
 {C:/Users/rodri/AppData/Local/Programs/MiKTeX/fo
 nts/enc/dvips/lm/lm-ts1.enc}{C:/Users/rodri/AppData/Local/Programs/MiKTeX/fonts
 /enc/dvips/lm/lm-ec.enc}{C:/Users/rodri/AppData/Local/Programs/MiKTeX/fonts/enc
@@ -1644,9 +1725,9 @@ blic/lm/lmtt10.pfb><C:/Users/rodri/AppData/Local/Programs/MiKTeX/fonts/type1/pu
 blic/lm/lmtt8.pfb><C:/Users/rodri/AppData/Local/Programs/MiKTeX/fonts/type1/pub
 lic/amsfonts/symbols/msam10.pfb><C:/Users/rodri/AppData/Local/Programs/MiKTeX/f
 onts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on 01_raciocinio_bayesiano.pdf (38 pages, 566815 bytes).
+Output written on 01_raciocinio_bayesiano.pdf (43 pages, 12459475 bytes).
 PDF statistics:
- 532 PDF objects out of 1000 (max. 8388607)
- 92 named destinations out of 1000 (max. 500000)
- 57472 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 577 PDF objects out of 1000 (max. 8388607)
+ 103 named destinations out of 1000 (max. 500000)
+ 57477 words of extra memory for PDF output out of 61914 (max. 10000000)
 

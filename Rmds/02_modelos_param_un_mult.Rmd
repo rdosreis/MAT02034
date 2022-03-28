@@ -1,0 +1,402 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+subtitle: "Modelos de parâmetro único e modelos de múltiplos parâmetros"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+# Introdução {.allowframebreaks}
+
+- Nesta aula, descreveremos o uso do `R` para \structure{resumir} distribuições \emph{a posteriori} para modelos de parâmetro único e com múltiplos parâmetros.
+- Em ambos os casos, a sumarização da distribuição \emph{a posteriori} é facilitada pelo uso de funções `R` para calcular e simular distribuições da família exponencial.
+- Através de um exemplo, vamos explorar uma abordagem conjugada e um método de aproximação da distrbuição \emph{a posteriori}.
+
+# Exemplo: Taxa de Scram em Usinas Nucleares {.allowframebreaks}
+
+## {.allowframebreaks}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='90%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Martz1999.png'))
+
+```
+
+## Exemplo: Taxa de Scram em Usinas Nucleares {.allowframebreaks}
+
+- Uma tarefa importante na regulação de usinas nucleares é examinar dados operacionais anuais dde usinas para tendências de confiabilidade e segurança ao longo do tempo. 
+- Ao nível da planta (usina), uma tendência decrescente na \structure{taxa anual de falhas} de importantes sistemas de segurança é uma indicação de melhorias de confiabilidade sustentadas ao longo do tempo, mas uma tendência crescente geralmente indica a necessidade de ações corretivas.
+
+\framebreak
+
+- Quando o processo de fissão ou reatividade de um reator de energia nuclear está acima de um certo nível limite, o reator é dito estar em estado crítico ou, simplesmente, crítico. 
+- Um importante sistema de segurança em uma usina nuclear é o sistema de proteção do reator. Este sistema é projetado para mudar rapidamente o reator de um estado crítico para um não crítico após algum evento transitório, como perda de energia externa. 
+- Em resposta a tal evento, hastes de controle, que são feitas de um material apropriado para absorção de nêutrons, são inseridas no núcleo do reator, desligando assim a reatividade.
+
+\framebreak
+
+- Isso é conhecido como trip ou \structure{scram} do reator e pode ser realizado de forma automática ou manual. Os scrams do reator podem resultar de eventos iniciais que variam de incidentes relativamente menores a eventos que são precursores de acidentes. 
+- A \structure{taxa na qual ocorrem scrams não planejados} é, portanto, um indicador importante do desempenho e da confiabilidade geral da planta.
+
+\framebreak
+
+- A Tabela 1 contém dados de scrams de 1984-1993 para 66 usinas nucleares comerciais dos EUA, cada uma com horas críticas diferentes de zero para cada ano desse período. Os dados foram obtidos de uma série de relatórios anuais e consistem no número anual de scrams não planejados $x_{ij}$ no total de horas críticas $T_{ij}$ para a planta $i = 1, \ldots, 66$ e ano codificado $j = 1, \ldots, 10$.
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='100%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Martz1999_dados.png'))
+
+```
+
+\framebreak
+
+- \structure{Martz, Parker e Rasmuson (1999)}, consideraram a distribuição de Poisson um modelo apropriado para descrever a variabilidade de amostragem condicional nos dados individuais específicos da planta na Tabela 1.
+- Ou seja, condicional à verdadeira  taxa de scram desconhecida $\lambda_{ij}$, os autores assumem que $x_{ij}$ segue uma distribuição de Poisson com parâmetro $\lambda_{ij}T_{ij}$. Além disso, assumimos que todos os valores xij são distribuídos condicionalmente independentemente, dadas as taxas de scram verdadeiras (mas desconhecidas), ou seja,
+
+$$
+x_{ij}|\lambda_{ij} \stackrel{ind.}\sim Poi(\lambda_{ij}T_{ij}),\ \lambda_{ij} > 0.
+$$
+\framebreak
+
+- Note que o \structure{estimador de máxima verossimilhança (EMV)} de $\lambda_{ij}$ é simplesmente $x_{ij}/T_{ij}$. Isso pode ser visto, escrevendo a (contribuição individual para a) \structure{função de verossimilhança} para $\boldsymbol{\lambda} = (\lambda_{11}, \lambda_{12}, \ldots, \lambda_{21}, \ldots, \lambda_{66,10})$
+
+$$
+L(\lambda_{ij}) = \frac{1}{x_{ij}!} (\lambda_{ij}T_{ij})^{x_{ij}}\exp\{-\lambda_{ij}T_{ij}\}.
+$$
+
+- Desta forma, a \structure{função de log-verossimilhança} é obtida
+
+$$
+\ell(\lambda_{ij}) \propto x_{ij}\log(\lambda_{ij}T_{ij}) - \lambda_{ij}T_{ij}.
+$$
+e a dervidada parcial de $\ell(\boldsymbol{\lambda})$ é dada por
+
+$$
+\frac{\partial}{\partial\lambda_{ij}} \ell(\boldsymbol{\lambda}) = \frac{x_{ij}}{\lambda_{ij}} - T_{ij}.
+$$
+\framebreak
+
+- Ao igualar esta última expressão a zero, obtemos o EMV de $\lambda_{ij}$
+
+$$
+\hat{\lambda}_{ij} = \frac{x_{ij}}{T_{ij}}.
+$$
+
+- Usando os dados da Tabela 1, cada um deles é plotado na Figura 1. Os EMVs correspondentes da taxa média de scram para as 66 plantas também são apresentadas na Figura 1 por ano. Observe a tendência decrescente na taxa média de scram ao longo do tempo, particularmente entre 1984 e 1988.
+
+\framebreak
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='70%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Martz1999_emvs.png'))
+
+```
+
+\framebreak
+
+- \structure{Martz, Parker e Rasmuson (1999)} utilizam um \structure{modelo hierárquico} para levar em consideração aspectos \structure{individuais} e \structure{comuns} das usinas nucleares para estimar as \structure{taxas de scrams} de cada usina em cada ano de observação.
+- Voltaremos a esta abordagem quando formos estudar os \structure{modelos bayesianos hierárquicos}.
+
+\framebreak
+
+- Nesta aula, vamos considerar apenas os dados do ano de 1984 (podemos descartar o uso do índice $j$)
+
+```{r carrega-dados, echo=TRUE, message=FALSE, warning=FALSE}
+
+library(dplyr)
+
+scram <- readr::read_table2(
+  file = here::here("dados", "table76.txt"))
+
+scram <- scram %>% 
+  filter(Year == 1) %>% 
+  select(-X5, -Year) %>% 
+  rename(x = y) %>% 
+  mutate(T = T/1000)
+
+scram
+
+```
+
+- Vamos supor que os dados de ocorrências de scrams são \structure{independentes}, distribuídos conforme uma distribuição de \structure{Poisson com parâmetro comum} $\lambda$. Desta forma, a função de verossimilhança é dada por
+
+$$
+L(\lambda) = \prod_{i=1}^{66}{\frac{1}{x_{i}!} (\lambda T_{i})^{x_{i}}\exp\{-\lambda T_{i}\}} \propto \lambda^{\sum_{i=1}^{66}{x_i}}\exp\left\{-\lambda\sum_{i=1}^{66}{T_i}\right\}.
+$$
+
+- Note que o EMV de $\lambda$ é dado por $\hat{\lambda} = \sum_{i=1}^{66}{x_i}/\sum_{i=1}^{66}{T_i}$.
+
+```{r emv-lambda, echo=TRUE, message=FALSE, warning=FALSE}
+
+soma.x <- sum(scram$x)
+soma.T <- sum(scram$T)
+lambda.chap <- soma.x/soma.T
+soma.x
+soma.T
+lambda.chap
+
+```
+
+# Modelos de parâmetro único {.allowframebreaks}
+
+- Uma abordagem bayesiana para o problema de estimar o parâmetro $\lambda$ consiste em especificar uma distribuição \emph{a priori} para $\lambda$.
+- O uso de uma \structure{análise conjugada} proporciona facilidade algébrica para obtenção da distribuição  \emph{a posteriori} de $\lambda$.
+- Suponha que assumimos uma distribuição Gama \emph{a priori}
+
+$$
+g(\lambda) = \frac{\beta^{\alpha}}{\Gamma(\alpha)}\lambda^{\alpha - 1}e^{-\beta\lambda},\ \alpha,\beta > 0.
+$$ 
+\framebreak
+
+```{r priori-gama, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+x <- seq(0, 5, length = 1000)
+
+plot(x, dgamma(x, shape = 0.5, rate = 0.5),
+     ylab = 'Densidade', xlab = expression(lambda),
+     type = 'l', col = 'purple', lwd = 2, ylim = c(0,1.5))
+lines(x, dgamma(x, shape = 0.5, rate = 1), col = 'red', lwd = 2) 
+lines(x, dgamma(x, shape = 1.5, rate = 1), col = 'blue', lwd = 2)
+lines(x, dgamma(x, shape = 2, rate = 3), col = 'orange', lwd = 2)
+lines(x, dgamma(x, shape = 3, rate = 2), col = 'green', lwd = 2)
+
+legend('topright',
+       legend = c('Gama(0.5, 0.5)','Gama(0.5, 1)','Gama(1.5,1)', 'Gama(2,3)', 'Gama(3,2)'),
+       lty = c(1,1,1,1,1), , lwd = c(2,2,2,2,2),
+       col=c('purple', 'red', 'blue', 'orange', 'green'),
+       bty = "n")
+
+```
+
+\framebreak
+
+- Combinando esta distribuição com a verossimilhança, temos a distribuição \emph{a posteriori}
+
+$$
+g(\lambda|\mathbf{x}) \propto \lambda^{\alpha + \sum_{i=1}^{66}{x_i} - 1}\exp\left\{-\lambda\left(\beta + \sum_{i=1}^{66}{T_i}\right)\right\},
+$$
+
+que também é Gama com parâmetros $\alpha + \sum_{i=1}^{66}{x_i}$ e $\beta + \sum_{i=1}^{66}{T_i}$.
+
+- Dado os hiperparâmetros $\alpha$ e $\beta$, podemos realizar inferências para $\lambda$ a partir das propriedades da distribuição Gama.
+
+\framebreak
+
+- Note, por exemplo, que a média \emph{a posteriori} é dada por
+
+$$
+\frac{\alpha + \sum_{i=1}^{66}{x_i}}{\beta + \sum_{i=1}^{66}{T_i}} = \frac{\alpha}{\beta} \times \left(\frac{1}{1 + \sum_{i=1}^{66}{T_i}/\beta}\right) + \hat{\lambda} \times \left(\frac{\sum_{i=1}^{66}{T_i}/\beta}{1 + \sum_{i=1}^{66}{T_i}/\beta}\right)
+$$
+
+é uma \structure{média ponderada} entre a \textbf{média \emph{a priori}} e o \textbf{EMV} de $\lambda$.
+
+\framebreak
+
+- Assumindo uma \structure{informação \emph{a priori} ``vaga''}, e especificando os hiperparâmetros $\alpha = \beta = 0.01$ (a média e a variância \emph{a priori} são 1 e 100, respectivamente), temos que a distribuição \emph{a posteriori} de $\lambda$ é 
+
+$$
+\lambda|\boldsymbol{x} \sim {\rm Gama}(0.01 + 361, 0.01 + 374.2288).
+$$
+
+- Um estimador bayesiano com base na média \emph{a posteriori} nos fornece a seguinte estimativa: $\tilde{\lambda} = 0.9646514$.
+    + $\tilde{\lambda} \approx \hat{\lambda}$, como era de se esperar, devido a informação \emph{a priori} vaga.
+    + A partir da distribuição \emph{a posteriori} podemos construir intervalos de credibilidade e avaliar probabilidades com respeito a $\lambda$.
+
+# Modelos de múltiplos parâmetros {.allowframebreaks}
+
+- Um modelo alternativo à distribuição de Poisson para os dados é dada pela seguinte função de probabilidade\footnote{Esta distribuição pode ser obtida da mistura da distribuição Poisson por Gama e pode ser vista como a generalização da distribuição Binomial Negativa.}
+
+$$
+p(x_i|\alpha,\beta) = \frac{\Gamma(\alpha + x_i)}{\Gamma(\alpha)\Gamma(x_i + 1)}\left(\frac{\beta}{\beta + T_i}\right)^{\alpha}\left(\frac{T_i}{\beta + T_i}\right)^{x_i},\ \alpha, \beta > 0. 
+$$
+
+## Modelos de múltiplos parâmetros {.allowframebreaks}
+
+- Supondo que
+    + $x_i\stackrel{ind.}\sim p(x_i|\alpha,\beta),\ i = 1, \ldots,n$;
+    + e que a distribuição \emph{a priori} é especificada como $g(\alpha, \beta) \propto \alpha^{-1} (\beta + 1)^{-2},\ \alpha, \beta > 0$ (também pode ser vista como uma informação vaga para os parâmetros $\alpha$ e $\beta$).
+- Então a distribuição \emph{a posteriori} de $\alpha$ e $\beta$ é obtida por
+
+$$
+g(\alpha,\beta|\boldsymbol{x})\propto g(\alpha,\beta)\prod_{i=1}^{66}{p(x_i|\alpha,\beta)}.
+$$
+
+- Embora a distribuição \emph{a priori}, $g(\alpha,\beta)$ seja __imprópria__\footnote{Quando a integral da densidade é diferente de 1.}, a distribuição \emph{a posteriori} é própria.
+- Note que a distribuição \emph{a posteriori} não pode ser obtida analiticamente.
+
+## Aproximação por grade {.allowframebreaks}    
+
+- Imagine que há uma imagem que você não pode ver em sua totalidade; você apenas observa trechos ao longo de uma grade que varre da esquerda para a direita na imagem.
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='70%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'aprox_grade.png'))
+
+```
+
+- Quanto mais fina a grade, mais nítida é a imagem.
+
+\framebreak
+
+- Esta é a ideia geral por trás da aproximação bayesiana por grade, caso em que a "imagem" alvo é distribuição \emph{a posteriori}.
+    + Assumindo $\theta$ como um parâmetro (ou vetor de parâmetros) genérico, não precisamos observar $g(\theta|\boldsymbol{x})$ em todos os possíveis $\theta$ para ter uma noção de sua estrutura.
+    + Podemos avaliar $g(\theta|\boldsymbol{x})$ em uma grade finita e discreta de possíveis valores $\theta$.
+    + Posteriormente, podemos obter __amostras aleatórias__ desta distribuição discretizada para __aproximar__ a distribuição \emph{a posteriori}.
+    
+\framebreak
+
+A aproximação de grade produz uma amostra de $N$ valores independentes de $\theta$, $\{\theta^{(1)},\theta^{(2)},\ldots,\theta^{(N)}\}$, a partir de uma aproximação discretizada da distribuição \emph{a posteriori} $g(\theta|\boldsymbol{x})$. Este algoritmo evolui em quatro etapas:
+
+1. Defina uma grade discreta de possíveis valores $\theta$.
+2. Avalie a distribuição \emph{a priori} $g(\theta)$ e a função de verossimilhança $L(\theta)$ em cada valor de $\theta$ da grade. 
+3. Obtenha uma aproximação discreta da distribuição \emph{a posteriori} $g(\theta|\boldsymbol{x})$ por: (a) calcular o produto $g(\theta)L(\theta)$ em cada valor de $\theta$ da grade; e então (b) __normalizar__ os produtos para que somem 1 em todos os $\theta$.
+4. Obter uma amostra aleatória de $N$ valores da grade de $\theta$ em relação às suas correspondentes probabilidades \emph{a posteriori} normalizadas.
+
+\framebreak
+
+```{r aprox-grade, echo=TRUE, message=FALSE, warning=FALSE}
+
+# Passo 1: criar a grade
+
+alpha_grade <- seq(from = 0.01, to = 4, length = 200)
+beta_grade <- seq(from = 0.01, to = 4, length = 200)
+
+grade_df <- expand.grid(alpha_grade, beta_grade)
+names(grade_df) <- c("alpha_g", "beta_g")
+```
+
+\framebreak
+
+```{r aprox-grade2, echo=TRUE, message=FALSE, warning=FALSE}
+
+# Passos 2: avaliar a priori e vero. em cada ponto da grade
+
+priori_ab <- function(a, b){
+  a^(-1)*(b + 1)^(-2)
+}
+
+veros_ab <- function(a, b, dados){
+  x <- dados$x
+  t <- dados$T
+  
+  prod( (gamma(a + x) / (gamma(x + 1) * gamma(a))) 
+        * ((b/(b + t))^a) * ((t/(b + t))^x) )
+}
+```
+
+\framebreak
+
+```{r aprox-grade3, echo=TRUE, message=FALSE, warning=FALSE}
+
+grade_df$priori <- 0
+grade_df$veros <- 0
+
+for(i in 1:length(grade_df$priori)){
+  
+  grade_df$priori[i] <- priori_ab(a = grade_df$alpha_g[i],
+                                  b = grade_df$beta_g[i])
+  grade_df$veros[i] = veros_ab(a = grade_df$alpha_g[i],
+                               b = grade_df$beta_g[i],
+                               dados = scram)
+
+}
+```
+
+\framebreak
+
+```{r aprox-grade4, echo=TRUE, message=FALSE, warning=FALSE}
+
+# Passo 3: aproximar a posteriori
+
+library(dplyr)
+
+grade_df <- grade_df %>% 
+  mutate(post_naonorm = priori * veros,
+         posteriori = post_naonorm/sum(post_naonorm))
+
+# Confirmando que a posteriori aproximada soma 1
+
+grade_df %>% 
+  summarize(sum(post_naonorm), sum(posteriori))
+```
+
+\framebreak
+
+```{r aprox-grade5, echo=TRUE, message=FALSE, warning=FALSE}
+
+# Passo 4: amostrar da posteriori discretizada
+
+post_amostra <- sample_n(grade_df, size = 1000, 
+                        weight = posteriori,
+                        replace = TRUE)
+```
+
+\framebreak
+
+```{r grafico-post, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='95%'}
+
+# Gráfico da amostra a posteriori
+
+library(ggplot2)
+
+p <- ggplot(data = post_amostra,
+            mapping = aes(x = alpha_g, y = beta_g)) +
+  geom_point() +
+  labs(x = expression(alpha), y = expression(beta))
+
+p
+
+```
+
+\framebreak
+
+- Podemos obter estimativas de $\alpha$ e $\beta$ a partir da amostra da distribuição \emph{a posteriori}.
+
+```{r aprox-grade-est, echo=TRUE, message=FALSE, warning=FALSE}
+
+mean(post_amostra$alpha_g)
+sd(post_amostra$alpha_g)
+
+mean(post_amostra$beta_g)
+sd(post_amostra$beta_g)
+
+```
+
+# Considerações finais {.allowframebreaks}
+
+- Limitações no método de aproximação por grade se apresentam rapidamente à medida que nossos modelos se tornam mais complicados (que apresentam muitos parâmetros).
+- Em tais configurações, a aproximação por grade sofre com a __"maldição da dimensionalidade"__.
+- Analogamente, ao usar a aproximação de grade para simular posteriores multivariadas, precisamos dividir o espaço amostral multidimensional em uma grade muito, muito fina para evitar grandes lacunas em nossa aproximação.
+- Na prática, isso pode não ser viável.
+- Quando avaliado em grades cada vez mais finas, o método de aproximação de grade torna-se computacionalmente caro.
+- Os métodos \structure{MCMC} fornecem uma alternativa mais flexível.
+
+## Para casa
+
+- Rodar os códigos dos exemplos de aula.
+    + Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+- Exercício (Moodle).
+
+## Próxima aula
+
+- Introdução a computação bayesiana.
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Bons estudos!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Statistically-Insignificant-final06.jpg'))
+
+```
+

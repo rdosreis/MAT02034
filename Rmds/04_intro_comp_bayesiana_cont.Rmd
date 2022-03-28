@@ -1,0 +1,291 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+subtitle: "Introdução a computação bayesiana (continuação)"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+# Introdução {.allowframebreaks}
+
+- Nos exemplos das aulas anteriores, fomos capazes de produzir amostras simuladas diretamente da distribuição _a posteriori_, uma vez que as distribuições possuíam formas funcionais familiares.
+- Poderíamos obter estimativas de __Monte Carlo__ da média _a posteriori_ para qualquer função dos parâmetros de interesse.
+- Mas em muitas situações, a distribuição _a posteriori_ não tem uma forma familiar e precisamos usar um algoritmo alternativo para produzir uma amostra simulada.
+
+# Amostragem por rejeição {.allowframebreaks}
+
+- Um algoritmo geral para simular realizações (aleatórias) de uma dada distribuição de probabilidade é a \structure{amostragem de rejeição}^[Ou __método da rejeição__, ou ainda, __método da aceitação/rejeição__.].
+- Suponha que desejamos produzir uma amostra independente de uma densidade _a posteriori_ $g(\theta|y)$ em que a constante de normalização __pode não ser conhecida__.
+- O primeiro passo na amostragem de rejeição é encontrar outra densidade de probabilidade $p(\theta)$ tal que:
+    + É fácil simular realizações de $p(\theta)$.
+    + A densidade $p(\theta)$ assemelha-se à densidade _a posteriori_ de interesse $g(\theta|y)$ em termos de localização e dispersão.
+    + Para todo $\theta$ e uma constante $c$, $g(\theta|y) \leq cp(\theta)$.
+
+## Amostragem por rejeição {.allowframebreaks}
+
+Suponha que sejamos capazes de encontrar uma densidade $p(\theta)$ com essas propriedades.
+
+Em seguida, obtém-se as realizações de $g(\theta|y)$ usando o seguinte algoritmo de aceitação/rejeição:
+
+1. Simule independentemente $\theta$ de $p(\theta)$ e uma variável aleatória uniforme $U$ no intervalo unitário.
+2. Se $U \leq \frac{g(\theta|y)}{cp(\theta)}$, então __aceite__ $\theta$ como uma realização da densidade $g(\theta|y)$; caso contrário, __rejeite__ $\theta$.
+3. Continue os passos 1 e 2 do algoritmo até que tenha coletado um número suficiente de $\theta$ "aceitos".
+
+\framebreak
+
+- Por que esse método funciona? Um cálculo de probabilidade simples mostra que função distribuição acumulada (fda) da variável aleatória aceita, $\Pr\left(\theta_c \leq x | U \leq \frac{g(\theta|y)}{cp(\theta)}\right)$, é exatamente o fda de $\theta$.
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='60%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'quadro_preto.jpg'))
+
+```
+
+\framebreak
+
+- A amostragem por rejeição é um dos métodos mais úteis para simular realizações de uma variedade de distribuições.
+- A principal tarefa no planejamento de um algoritmo de amostragem por rejeição é encontrar uma \structure{densidade proposta} adequada $p(\theta)$ e uma constante $c$.
+- Na etapa 2 do algoritmo, a probabilidade de aceitar um \structure{candidato} é dada por $\frac{g(\theta|y)}{cp(\theta)}$.
+    + Pode-se monitorar o algoritmo calculando a proporção de candidatos que são aceitos; um algoritmo de amostragem por rejeição eficiente tem uma alta taxa de aceitação.
+- A escolha ótima para $c$ é $\sup_{\theta}\{g(\theta|y)/p(\theta)\}$, mas mesmo essa escolha pode resultar em um número indesejavelmente grande de rejeições^[Um algoritmo que rejeita muitos candidatos é pouco eficiente, e pode resultar em custo de tempo.].
+
+## Amostragem por rejeição: exemplo {.allowframebreaks}
+
+- Suponha que estamos estudando a distribuição do número de defeituosos $X$ na produção diária de um produto.
+- Considere o modelo $(X | Y, \theta) \sim binomial(Y, \theta)$, em que $Y$, a produção de um dia, é uma __variável aleatória__ com uma distribuição de Poisson com média conhecida $\lambda$, e $\theta$ é a probabilidade de que qualquer produto seja defeituoso.
+- A dificuldade, no entanto, é que $Y$ não é observável, e a inferência deve ser feita apenas com base em $X$.
+- A distribuição _a priori_ é tal que $(\theta|Y = y) \sim Beta(\alpha,\gamma)$, com $\alpha$ e $\gamma$ conhecidos independentes de $Y$.
+
+\framebreak
+
+- A análise bayesiana aqui não é um problema particularmente difícil porque a distribuição _a posteriori_ $\theta|X = x$ pode ser obtida da seguinte forma.
+- Primeiro, observe que $X|\theta \sim Poisson(\lambda\theta)$^[Lembre que $\Pr(X = x|\theta,\lambda) = \sum_{y=0}^{\infty}{\Pr(X = x, Y = y| \theta,\lambda)} = \sum_{y=0}^{\infty}{\Pr(X = x | Y = y, \theta, \lambda)\times \Pr(Y = y | \theta, \lambda)}$.]. Em seguida, $\theta \sim Beta(\alpha,\gamma)$. Portanto,
+
+$$
+g(\theta|X = x) \propto \exp(-\lambda\theta)\theta^{x + \alpha -1}(1 - \theta)^{\gamma - 1},\ 0 \leq \theta \leq 1.
+$$
+
+- A única dificuldade é que esta não é uma __distribuição padrão__ e, portanto, as quantidades _a posteriori_ não podem ser obtidas de forma fechada.
+
+## Amostragem por rejeição: exemplo {.allowframebreaks}
+
+- Observando $g(\theta|X = x)$, uma boa escolha para a distribuição proposta $p(theta)$ deve ser a densidade de $Beta(x + \alpha, \gamma)$.
+- Em nosso exemplo, suponha $X = 1$, $\alpha = 1$, $\gamma = 49$ e $\lambda = 100$.
+- Note que $c = \sup_{\theta \in [0,1]}\{\exp(-100\theta)\} = 1$.
+- Ainda, $\frac{g(\theta|X = x)}{cp(\theta)} = \exp(-100\theta)$.
+
+\framebreak
+
+\footnotesize
+
+```{r metodo-rejeicao, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+metodo_rejeicao <- function(x, alpha, gamma, lambda, j = 0){
+  repeat{
+    j <- j + 1
+# 1. Gerar de theta candidado de p e u de U(0,1)
+  u <- runif(n = 1, 0, 1)
+  theta_cand <- rbeta(
+    n = 1, shape1 = x + alpha, shape2 = gamma)
+# 2. Aceita theta candidato se u menor ou igual g/cp  
+    if (u <= exp(-lambda * theta_cand))
+      return(c(theta_cand, j))
+  }
+}
+
+```
+
+\framebreak
+
+\footnotesize
+
+```{r metodo-rejeicao2, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+M_alvo <- 10000 # Número de amostras
+theta <- c()
+M_gerados <- c()
+
+# Loop
+for (i in 1:M_alvo){
+  aux <- metodo_rejeicao(x = 1, alpha = 1,
+                         gamma = 49, lambda = 100)
+  theta[i] <- aux[1]
+  M_gerados[i] <- aux[2]
+}
+
+taxa_aceita <- M_alvo/sum(M_gerados)
+taxa_aceita
+
+```
+
+\framebreak
+
+\normalsize
+
+```{r metodo-rejeicao3, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, out.width="95%", fig.align='center'}
+
+hist(theta, breaks = 40,
+     probability = TRUE, border = "white",
+     xlab = expression(theta), ylab = "Densidade",
+     main = "Amostra da dist. a posteriori")
+
+```
+
+\framebreak
+
+- A partir desta amostra podemos obter estimar a média _a posteriori_ de $\theta$, intervalos de credibilidade, e probabilidades _a posteriori_.
+
+- O método da rejeição pode ser utilizado para obter amostras de distribuições de qualquer dimensão (desde que $p$ seja uma densidade no mesmo espaço que $g$).
+
+# Amostragem por importância {.allowframebreaks}
+
+- Voltemos ao problema básico de calcular uma integral na inferência bayesiana. 
+- Em muitas situações, a constante de normalização da densidade _a posteriori_ $g(\theta|y)$ será desconhecida, então a média posterior da função $h(\theta)$ será dada pela razão de integrais
+
+$$
+\E[h(\theta)|y] = \frac{\int{h(\theta)g(\theta|y)d\theta}}{\int{g(\theta|y)d\theta}}.
+$$
+
+\framebreak
+
+- Se pudéssemos simular uma amostra $\{\theta^j\}$ diretamente da densidade _a posteriori_ $g(\theta|y)$, poderíamos aproximar esse valor esperado por uma estimativa de Monte Carlo. 
+- No caso em que não podemos gerar uma amostra diretamente de $g(\theta|y)$, suponha que podemos construir uma densidade de probabilidade $p(\theta)$ que podemos simular e que se aproxime da densidade _a posteriori_ $g(\theta|y)$.
+- Reescrevemos a média _a posteriori_ como
+
+$$
+\E[h(\theta)|y] = \frac{\int{h(\theta)\frac{g(\theta|y)}{p(\theta)}p(\theta)d\theta}}{\int{\frac{g(\theta|y)}{p(\theta)}p(\theta)d\theta}} = \frac{\int{h(\theta)w(\theta)p(\theta)d\theta}}{\int{w(\theta)p(\theta)d\theta}},
+$$
+
+em que $w(\theta) = g(\theta|y)/p(\theta)$ é a \structure{função peso}.
+
+\framebreak
+
+- Se $\theta^1,\ldots,\theta^M$ são uma amostra simulada da densidade de aproximação $p(\theta)$, então a __estimativa de amostragem por importância__ da média _a posteriori_ é
+
+$$
+\overline{h}_{AI} = \frac{\sum_{j=1}^M{h(\theta^j)w(\theta^j)}}{\sum_{j=1}^M{w(\theta^j)}}.
+$$
+
+- Esta é chamada de \structure{estimativa de amostragem por importância} porque estamos amostrando valores de $\theta$ que são importantes no cálculo das integrais no numerador e no denominador.
+
+\framebreak
+
+- Como na amostragem por rejeição, a principal questão ao planejar uma boa estimativa de amostragem por importância é encontrar uma densidade de amostragem adequada $p(\theta)$. 
+- Essa densidade deve ser de uma forma funcional familiar para que as realizações simuladas estejam disponíveis.
+- A densidade deve imitar a densidade _a posteriori_ $g(\theta|y)$ e ter caudas relativamente planas (_flat_) para que a função peso $w(\theta)$ seja limitada por cima. 
+- Pode-se monitorar a escolha de $p(\theta)$ inspecionando os valores dos pesos simulados $w(\theta^j)$.
+    + Se não houver pesos muito grandes, é provável que a função de peso seja limitada e o amostrador de importância esteja fornecendo uma estimativa adequada.
+
+\framebreak
+
+Retornando ao exemplo:
+
+\footnotesize
+
+```{r amostragem-importancia, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+amostragem_importancia <- function(x, alpha, gamma, lambda, M = 1000){
+
+  # 1. Gerar de theta de p
+  theta <- rbeta(n = M, shape1 = x + alpha, shape2 = gamma)
+  # 2. Calcula pesos de importância
+  w.theta <- exp(-lambda * theta)
+  # 3. Estimativa da média a posteriori
+  media_post <- weighted.mean(x = theta, w = w.theta)
+  return(media_post)
+}
+
+amostragem_importancia(x = 1, alpha = 1,
+                       gamma = 49, lambda = 100, M = 10000)
+```
+
+\normalsize
+
+# Sampling Importance Resampling {.allowframebreaks}
+
+- Na amostragem por rejeição, simulamos realizações a partir de uma proposta de densidade $p(\theta)$ e aceitamos um subconjunto desses valores para serem distribuídos de acordo com a densidade _a posteriori_ de interesse $g(\theta|y)$.
+- Existe um método alternativo de obtenção de uma amostra simulada a partir da densidade _a posteriori_ $g(\theta|y)$ motivada pelo algoritmo de amostragem por importância.
+
+\framebreak
+
+- Como antes, simulamos $M$ realizações de $\theta$ a partir da densidade proposta $p(\theta)$ denotada por $\theta^1, \ldots, \theta^M$ e calculamos os pesos $\{w(\theta^j) = g(\theta^j |y)/p(\theta^j)\}$.
+- Agora, convertemos os pesos em probabilidades usando a fórmula
+
+$$
+p^j = \frac{w(\theta^j)}{\sum_{j=1}^M{w(\theta^j)}}.
+$$
+
+\framebreak
+
+- Suponha que tomemos uma nova amostra $\theta^{*1}, \ldots, \theta^{*M}$ da distribuição discreta sobre $\theta^1, \ldots, \theta^M$ com respectivas probabilidades $p^1, \ldots, p^m$.
+- Então os $\{\theta^{*j}\}$ serão aproximadamente distribuídos de acordo com a distribuição _a posteriori_ $g(\theta|y)$.
+- Este método, chamado de \structure{\emph{sampling importance resampling} (SIR)}^[Alguns autores traduziram o termo para o português como __reamostragem ponderada__.], é um procedimento de \structure{\emph{bootstrap} ponderado} em que __amostramos com reposição__ da amostra $\{\theta^j\}$ com probabilidades de amostragem desiguais.
+
+## Sampling Importance Resampling {.allowframebreaks}
+
+Retornando ao exemplo:
+
+\footnotesize
+
+```{r sir, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+amostragem_sir <- function(x, alpha, gamma, lambda, M = 1000){
+
+  # 1. Gerar de theta de p(theta)
+  theta <- rbeta(n = M, shape1 = x + alpha, shape2 = gamma)
+  # 2. Calcula pesos de importância
+  w.theta <- exp(-lambda * theta)
+  # 3. Converte pesos em probabilidades
+  p <- w.theta/sum(w.theta)
+  # 4. Reamostra theta de acordo com p
+  ind <- sample(x = 1:M, size = M, replace = TRUE, prob = p)
+  theta_s <- theta[ind]
+  return(theta_s)
+}
+
+theta_estrela <- amostragem_sir(x = 1, alpha = 1,
+                     gamma = 49, lambda = 100, M = 10000)
+```
+
+\framebreak
+
+\normalsize
+
+```{r sir2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, out.width="95%", fig.align='center'}
+
+hist(theta_estrela, breaks = 40,
+     probability = TRUE, border = "white",
+     xlab = expression(theta), ylab = "Densidade",
+     main = "Amostra da dist. a posteriori")
+
+```
+
+## Para casa
+
+- Rodar os códigos dos exemplos de aula.
+    + Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+- Exercício (Moodle).
+
+## Próxima aula
+
+- Métodos de Monte Carlo via Cadeias de Markov.
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Bons estudos!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Statistically-Insignificant-final05.jpg'))
+
+```
+
