@@ -1,0 +1,390 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+subtitle: "Modelos bayesianos hierárquicos"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+# Introdução {.allowframebreaks}
+
+- Em muitos problemas estatísticos, estamos interessados em aprender sobre __muitos parâmetros__ que estão conectados de alguma forma.
+    + Taxas ($\lambda_i$) de ocorrência de eventos em diferentes unidades (hospitais, municípios, usinas, etc.).
+    + Proporções ($p_i$) ou probabilidades de "sucesso" em diferentes unidades (fábricas, escolas, etc.).
+    + Médias ($\mu_i$ ou "estados latentes" em diferentes unidades (modelos dinâmicos no tempo).
+- Em situações de muitos parâmetros é comum construir uma distribuição _a priori_ de forma \structure{hierárquica}.
+
+\framebreak
+
++ Suponha um conjunto de observações $\mathbf{x} = (x_1, x_2, \ldots, x_n)$.
++ Suponha que a distribuição conjunta de $\mathbf{x}$ é dada por
+
+$$
+p(\mathbf{x}|\boldsymbol{\theta}) = p(x_1, x_2, \ldots, x_n | \boldsymbol{\theta}_1, \boldsymbol{\theta}_2),
+$$
+
+em que $\boldsymbol{\theta} = (\boldsymbol{\theta}_1, \boldsymbol{\theta}_2)$ é um vetor de parâmetros ($\boldsymbol{\theta}_1$ e $\boldsymbol{\theta}_2$ também podem ser vetores).
+
+\framebreak
+
++ Agora suponha que a distribuição _a priori_ (__conjunta__) é especificada da seguinte forma: 
+
+$$
+g(\boldsymbol{\theta}) = g(\boldsymbol{\theta}_1, \boldsymbol{\theta}_2) = g_1(\boldsymbol{\theta}_1 | \boldsymbol{\theta}_2) g_2(\boldsymbol{\theta}_2).
+$$
+
+- Uma forma alternativa de descrição deste modelo é dada por
+
+\begin{eqnarray*}
+(\mathbf{x}|\boldsymbol{\theta}_1, \boldsymbol{\theta}_2) &\sim& {\color{darkviolet}{p}}(\mathbf{x} | \boldsymbol{\theta}_1, \boldsymbol{\theta}_2),\\
+(\boldsymbol{\theta}_1 | \boldsymbol{\theta}_2) &\sim& {\color{darkgreen}{g_1}}(\boldsymbol{\theta}_1 | \boldsymbol{\theta}_2)\\
+\boldsymbol{\theta}_2 &\sim& {\color{orange}{g_2}}(\boldsymbol{\theta}_2)
+\end{eqnarray*}
+
+\framebreak
+
+- Note que, em geral, $g_2(\boldsymbol{\theta}_2)$ depende de parâmetros a serem especificados pelo pesquisador (especialista) da área.
+    + Em muitas situações não há interesse direto em $\boldsymbol{\theta}_2$.
+- Ainda, de acordo com o problema estatístico, $\boldsymbol{\theta}$ pode ser fatorado em mais de duas partes, formulando mais estágios na hierarquia.
+
+\framebreak
+
+- A distribuição _a posteriori_ de um \structure{modelo bayesiano hierárquico} pode ser expressa como
+
+$$
+g(\boldsymbol{\theta}|\mathbf{x}) = g(\boldsymbol{\theta}_1, \boldsymbol{\theta}_2|\mathbf{x}) \propto p(\mathbf{x}|\boldsymbol{\theta}_1, \boldsymbol{\theta}_2)\times g_1(\boldsymbol{\theta}_1 | \boldsymbol{\theta}_2) \times g_2(\boldsymbol{\theta}_2).
+$$
+
+- Note que, de acordo com as suposições do modelo, a distribuição $p(\mathbf{x} | \boldsymbol{\theta}_1, \boldsymbol{\theta}_2)$ pode não depender de $\boldsymbol{\theta}_2$, o que simplifica o modelo:
+
+$$
+g(\boldsymbol{\theta}_1, \boldsymbol{\theta}_2|\mathbf{x}) \propto p(\mathbf{x}|\boldsymbol{\theta}_1)\times g_1(\boldsymbol{\theta}_1 | \boldsymbol{\theta}_2) \times g_2(\boldsymbol{\theta}_2).
+$$
+
+
+<!-- # Modelos hierárquicos condicionalmente independentes {.allowframebreaks} -->
+
+<!-- ## MHCI {.allowframebreaks} -->
+
+<!-- Uma classe importante de modelos bayesianos hierárquicos é conhecida como \structure{modelos hierárquicos condicionalmente independentes (MHCI)}, e pode ser especificada da seguinte forma: -->
+
+<!-- - \structure{Estágio 1.} Condicionalmente em $\boldsymbol{\theta}_1 = (\theta_1,\theta_2, \ldots, \theta_n)$ e $\boldsymbol{\theta}_2 = \boldsymbol{\lambda}$, $x_i$ são independentes com densidade $p(x_i|\theta_i, \lambda)\ (i = 1, \ldots, n)$ pertencendo a uma família $\{p(x|\theta, \lambda),\ \theta \in \Theta,\ \lambda \in \Lambda\}$. -->
+<!-- - \structure{Estágio 1.} Condicionalmente em $\lambda$, $\theta_i$ são $iid$ com densidade pertencendo a uma família $\{g(x|\theta, \lambda),\ \theta \in \Theta,\ \lambda \in \Lambda\}$ -->
+
+
+<!-- ou modelos Bayes empíricos paramétricos -->
+
+# Exemplo: Taxa de Scram em Usinas Nucleares {.allowframebreaks}
+
+## {.allowframebreaks}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='90%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Martz1999.png'))
+
+```
+
+## Exemplo: Taxa de Scram em Usinas Nucleares {.allowframebreaks}
+
+- A Tabela 1 contém dados de scrams de 1984-1993 para 66 usinas nucleares comerciais dos EUA, cada uma com horas críticas diferentes de zero para cada ano desse período. Os dados foram obtidos de uma série de relatórios anuais e consistem no número anual de scrams não planejados $x_{ij}$ no total de horas críticas $T_{ij}$ para a planta $i = 1, \ldots, 66$ e ano codificado $j = 1, \ldots, 10$.
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='100%', paged.print=FALSE, purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Martz1999_dados.png'))
+
+```
+
+\framebreak
+
+- \structure{Martz, Parker e Rasmuson (1999)}, consideraram a distribuição de Poisson um modelo apropriado para descrever a variabilidade de amostragem condicional nos dados individuais específicos da planta na Tabela 1.
+- Considerando apenas os dados do ano de 1984, condicional à verdadeira taxa de scram desconhecida $\lambda_{i}$, os autores assumem que $x_{i}$ segue uma distribuição de Poisson com parâmetro $\lambda_{i}T_{i}$. Além disso, assumimos que todos os valores $x_i$ são condicionalmente independentemente, dadas as taxas de scram verdadeiras (mas desconhecidas).
+
+\framebreak
+
+- Ou seja,
+
+$$
+x_{i}|\lambda_{i} \stackrel{ind.}\sim Poi(\lambda_{i}T_{i}),\ \lambda_{i} > 0,\ i = 1, \ldots, n.
+$$
+
+- Suponha que assumimos uma distribuição Gama \emph{a priori}
+
+$$
+g_1(\lambda_i) \stackrel{iid}\sim Gama(\alpha, \beta),\ \alpha, \beta > 0,\ i = 1, \ldots, n.
+$$ 
+
+- Ainda, suponha que 
+
+$$
+g_2(\beta) \sim Gama(\gamma, \delta),\ \alpha = 1.4, \gamma = 0.01, \delta = 1.
+$$ 
+
+\framebreak
+
+- A distribuição _a posteriori_ deste modelo, $g(\boldsymbol{\lambda},\beta | \mathbf{x})$, é proporcional à
+
+\begin{eqnarray*}
+&& p(\mathbf{x}|\boldsymbol{\lambda},\beta) \times g_1(\boldsymbol{\lambda}|\beta) \times g_2(\beta) \\
+&=& \left\{\prod_{i=1}^n{p(x_i|\lambda_i)}\right\}\times\left\{\prod_{i=1}^n{g_1(\lambda_i|\beta)}\right\} \times g_2(\beta) \\
+&=& \left\{\prod_{i=1}^n{p(x_i|\lambda_i)\times g_1(\lambda_i|\beta)}\right\} \times g_2(\beta) \\
+&\propto& \left\{\prod_{i=1}^n{(\lambda_iT_i)^{x_i} e^{-\lambda_iT_i} \beta^{\alpha} \lambda_i^{\alpha - 1} e^{-\lambda_i\beta} }\right\} \times \beta^{\gamma - 1} e^{-\delta\beta}\\
+&\propto& \left\{\prod_{i=1}^n{\lambda_i^{\alpha + x_i - 1} e^{-\lambda_i(\beta + T_i)}}\right\} \times \beta^{n\alpha + \gamma - 1} e^{-\delta\beta}.
+\end{eqnarray*}
+
+## Exercício
+
+- A partir da distribuição _a posteriori_, encontre as distribuições __condicionais completas__ dos parâmetros do modelo do exemplo apresentado em aula.
+- A partir das condicionais completas, escreva o pseudo-código do amostrador de Gibbs para obter uma amostra da distribuição _a posteriori_ deste modelo.
+
+## Exemplo: Taxa de Scram em Usinas Nucleares {.allowframebreaks}
+
+Da distribuição _a posteriori_ do modelo
+
+$$
+g(\boldsymbol{\lambda},\beta | \mathbf{x}) \propto \left\{\prod_{i=1}^n{\lambda_i^{\alpha + x_i - 1} e^{-\lambda_i(\beta + T_i)}}\right\} \times \beta^{n\alpha + \gamma - 1} e^{-\delta\beta}.
+$$
+
+temos que as distribuições condicionais completas são dadas por
+
+\begin{eqnarray*}
+p(\lambda_i|\boldsymbol{\lambda}_{-i},\beta,\mathbf{x}) &\propto& \lambda_i^{\alpha + x_i - 1} e^{-\lambda_i(\beta + T_i)},\ i = 1, \ldots, n,\\
+p(\beta|\boldsymbol{\lambda},\mathbf{x}) &\propto& \beta^{n\alpha + \gamma - 1} e^{-\beta(\delta + \sum_{i=1}^n{\lambda_i})}.
+\end{eqnarray*}
+
+\framebreak
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='90%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'quadro_preto.jpg'))
+
+```
+
+\framebreak
+
+- Assim, notamos que as condicionais completas possuem uma forma familiar,
+
+\begin{eqnarray*}
+(\lambda_i|\beta, x_i, T_i) &\sim& Gama(\alpha + x_i, \beta + T_i),\ i = 1, \ldots, n,\\
+(\beta|\boldsymbol{\lambda},\mathbf{x}) &\sim& Gama(n\alpha + \gamma, \delta + \sum_{i=1}^n{\lambda_i}),
+\end{eqnarray*}
+
+e em vez de amostrar diretamente o vetor $\theta = (\lambda_1, \ldots, \lambda_n,  \beta)$ de uma só vez, pode-se sugerir uma amostragem progressiva e iterativa, começando, por exemplo, com os $\lambda_i$ para um dado valor inicial de $\beta$, seguido por uma atualização de $\beta$ dadas as novas amostras $\lambda_1, \ldots, \lambda_n$.
+
+\framebreak
+
+Mais precisamente, dada uma amostra, na iteração $t$, $\theta^t = (\lambda_1^t, \ldots, \lambda_n^t,  \beta^t)$ pode-se proceder da seguinte forma na iteração $t + 1$,
+
+1. $\lambda_i^{t+1}|(\beta^t, x_i, T_i) \sim Gama(\alpha + x_i, \beta^t + T_i),\ i = 1, \ldots, n$,
+2. $\beta^{t+1}|(\lambda_1^{t+1}, \ldots, \lambda_n^{t+1}, \mathbf{x}) \sim Gama(n\alpha + \gamma, \delta + \sum_{i=1}^n{\lambda_i^{t+1}})$.
+
+\framebreak
+
+\footnotesize
+
+```{r carrega-dados, echo=TRUE, message=FALSE, warning=FALSE}
+
+library(readr)
+library(dplyr)
+
+scram <- read_table2(
+  file = here::here("dados", "table76.txt"))
+
+scram <- scram %>% 
+  filter(Year == 1) %>% 
+  select(-X5, -Year) %>% 
+  rename(x = y) %>% 
+  mutate(T = T/1000)
+
+scram
+
+```
+
+\framebreak
+
+```{r gibbs, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+# Configuração
+
+alpha <- 1.4
+gamma <- 0.01
+delta <- 1
+
+n <- length(scram$x)
+M <- 10000
+
+theta <- matrix(0, nrow = M, ncol = n + 1)
+colnames(theta) <- c("beta", paste0("lambda_", 1:n))
+
+```
+
+\framebreak
+
+```{r gibbs1, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+# Amostrador de Gibbs (valor inicial e passo 1)
+
+beta <- 10
+lambda <- rgamma(n = n,
+                 shape = alpha + scram$x,
+                 rate = beta + scram$T)
+beta <- rgamma(n = 1,
+               shape = n*alpha + gamma,
+               rate = delta + sum(lambda))
+theta[1,] <- c(beta, lambda)
+
+```
+
+\framebreak
+
+```{r gibbs2, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+# Amostrador de Gibbs (passo t)
+
+for (t in 2:M){
+  
+  theta[t,2:(n+1)] <- rgamma(n = n,
+                             shape = alpha + scram$x,
+                             rate = theta[(t-1),1] + scram$T)
+  
+  theta[t,1] <- rgamma(n = 1,
+                       shape = n*alpha + gamma,
+                       rate = delta + sum(theta[t,2:(n+1)]))
+  
+}
+
+```
+
+\framebreak
+
+```{r mcmc_converge, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center', out.width="95%"}
+
+par(mfrow = c(3,2))
+
+plot(theta[,"beta"], type = "l", col = "steelblue",
+     ylab = expression(beta), xlab = "t",
+     main = "")
+
+acf(theta[,"beta"], main = expression(beta) )
+
+plot(theta[,"lambda_1"], type = "l", col = "steelblue",
+     ylab = expression(lambda[1]), xlab = "t",
+     main = "")
+
+acf(theta[,"lambda_1"], main = expression(lambda[1]))
+
+plot(theta[,"lambda_66"], type = "l", col = "steelblue",
+     ylab = expression(lambda[66]), xlab = "t",
+     main = "")
+
+acf(theta[,"lambda_66"], main = expression(lambda[66]))
+
+```
+
+\framebreak
+
+```{r inferencia, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center', out.width="95%"}
+
+par(mfrow = c(1,2))
+
+hist(theta[,"beta"], probability = TRUE,
+     col = "steelblue",
+     border = "white",
+     xlab = expression(beta),
+     ylab = "Densidade",
+     main = "")
+
+hist(theta[,"lambda_1"], probability = TRUE,
+     col = "steelblue",
+     border = "white",
+     xlab = expression(lambda[1]),
+     ylab = "Densidade",
+     main = "")
+
+```
+
+\framebreak
+
+```{r inferencia2, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+# Resumo da distribuição 
+# a posteriori das taxas de scram
+
+lambda_post <- data.frame(
+  usina = scram$Plant,
+  x = scram$x,
+  T = scram$T,
+  EMV = scram$x/scram$T,
+  media = colMeans(theta[,2:(n+1)]))
+
+lambda_post$li95 <- apply(X = theta[,2:(n+1)],
+                          MARGIN = 2,
+                          FUN = quantile, probs = 0.025)
+
+lambda_post$ls95 <- apply(X = theta[,2:(n+1)],
+                          MARGIN = 2,
+                          FUN = quantile, probs = 0.975)
+
+head(lambda_post)
+
+```
+
+\framebreak
+
+```{r inferencia3, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center', out.width="95%"}
+
+library(ggplot2)
+
+p <- ggplot(data = lambda_post) +
+  geom_point(mapping = 
+               aes(x = reorder(usina, desc(media)), y = media),
+             color = "steelblue") +
+  geom_errorbar(mapping = 
+                  aes(x = reorder(usina, desc(media)),
+                      ymin = li95, ymax = ls95),
+                width=.2, position = position_dodge(.9)) +
+  geom_hline(yintercept = sum(scram$x)/sum(scram$T),
+             color = "lightsalmon") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(x = "Usina", y = "Taxa de Scram", title = "Estimativas de Taxa de Scram de 1984 (média a posteriori e intervalo de credibilidade de 95%)")
+
+p
+
+```
+
+## Exercícios
+
+\normalsize
+
+1. Mude o valor inicial da cadeia, gere uma nova trajetória e aplique os métodos de avaliação de convergência.
+2. Rode uma cadeia de trajetória com 100.000 passos; avalie o traço da cadeia (para cada parâmetro); pode-se concluir que a cadeia convergiu?
+3. Com base nos exercícios anteriores, adapte o código apresentado em aula considerando o período de burn-in e thinning.
+
+## Para casa
+
+- Rodar os códigos dos exemplos de aula.
+    + Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+
+## Próxima aula
+
+- Modelos bayesianos hierárquicos (continuação).
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Bons estudos!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Statistically-Insignificant-final08.jpg'))
+
+```
+
