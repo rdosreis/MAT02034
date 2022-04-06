@@ -1,0 +1,476 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+subtitle: "Modelos bayesianos hierárquicos - exemplo: dados de mortalidade de câncer"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+# Introdução {.allowframebreaks}
+
+Nesta aula, através de um exemplo, vamos discutir os seguintes temas:
+
+- Reparametrização;
+- Gibbs com passos de M-H;
+- O algoritmo M-H passeio aleatório;
+- Parâmetros de \emph{tuning};
+- Computação no `R`;
+- Representação gráfica de modelos bayesianos hierárquicos (DAGs).
+
+# Exemplo: dados de mortalidade de câncer
+
+## Dados de mortalidade de câncer {.allowframebreaks}
+
+- Para ilustrar os métodos descritos nas aulas anteriores \structure{(MCMC e MBH)}, considere os dados de mortalidade por câncer analisados por Tsutakawa, Shoop e Marienfeld (1985)^[Tsutakawa RK, Shoop GL, Marienfeld CJ. Empirical Bayes estimation of cancer mortality rates. \emph{Stat Med.} 1985 Apr-Jun;4(2):201-12. doi: 10.1002/sim.4780040210.].
+- Estamos interessados em __estimar simultaneamente as taxas de óbito__ por câncer de estômago para homens "em risco" na faixa etária de 45 a 64 anos para as 84 maiores cidades do Missouri.
+
+## Dados de mortalidade de câncer {.allowframebreaks}
+
+- Para a $i$-ésima cidade ($i = 1,\ldots , 84$), observa-se o número $N_i$ em risco e o número de óbitos por câncer $y_i$.
+- Suponha que os $\{y_i\}$ sejam independentes com distribuições binomiais e ${p_i = \Pr(Y_i = y_i)}$ sejam as respectivas probabilidades de óbito.
+- Se as taxas de mortalidade por câncer não variam significativamente entre as cidades (pequenas ou grandes) e entre os homens nessa faixa etária, então pode ser razoável acreditar _a priori_ que as taxas são __intercambiáveis__.
+
+\framebreak
+
+- Essa crença _a priori_ pode ser modelada deixando os \structure{logitos (\emph{logit})} $\theta_i = \log(p_i/(1 - p_i))$ serem independentes $N(\mu, \tau^2)$, e então atribuindo $\mu$ e $\tau^2$ distribuições independentes $N(\mu_0,\sigma^2_{\mu})$ e $GaI(a, b)$.
+    + $\tau^2$ é um parâmetro de variância;
+    + $GaI(a, b)$ represeeta a distribuição __gama invertida__; se $X\sim GaI(a, b)$, então $f(x|a,b) = \frac{b^a}{\Gamma(a)}(1/x)^{a + 1}e^{-b/x}$.
+    + $(\mu_0, \tau^2, a, b)$ são hiperparâmetros a serem especificados.
+
+## DAGs
+
+- Podemos exibir esquematicamente o modelo hierárquico (assim, como outras relações de dependência) por meio de um \structure{grafo acíclico dirigido (\emph{directed acyclic graphs}, DAGs)}.
+
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'dag_mbh.jpg'))
+
+```
+
+# Dist. a posteriori {.allowframebreaks}
+
+- A distribuição _a posteriori_ deste modelo, $g(\boldsymbol{\theta},\mu, \tau^2, a, b | \mathbf{y})$, é proporcional à
+
+\begin{eqnarray*}
+&& p(\mathbf{y}|\boldsymbol{\theta},\mu, \tau^2) \times g_1(\boldsymbol{\theta}|\mu, \tau^2) \times g_2(\mu, \tau^2) \\
+&=& \left\{\prod_{i=1}^n{p(y_i|h(\theta_i))}\right\}\times\left\{\prod_{i=1}^n{g_1(\theta_i|\mu, \tau^2)}\right\} \times g_2(\mu, \tau^2) \\
+&=& \left\{\prod_{i=1}^n{p(y_i|h(\theta_i))\times g_1(\theta_i|\mu, \tau^2)}\right\} \times g_2(\mu, \tau^2).
+\end{eqnarray*}
+
+- $h(\theta_i) = \frac{e^{\theta_i}}{1 + e^{\theta_i}} = p_i$ é a inversa da função \emph{logit}; ou seja, o \structure{expito (\emph{expit})}.
+
+\framebreak
+
+- Devido à estrutura de __independência condicional__ deste modelo, é simples construir um algoritmo de simulação MCMC para gerar realizações a partir da distribuição _a posteriori_ conjunta de $(\boldsymbol{\theta},\mu, \tau^2)$.
+- Condicional nos parâmetros $\mu$ e $\tau^2$, $\theta_1, \ldots , \theta_n$ têm distribuições _a posteriori_ independentes com $\theta_i$ distribuída de acordo com a densidade proporcional a
+
+$$
+p(y_i|h(\theta_i)) \times g_1(\theta_i|\mu, \tau^2) = Bin(y_i|N_i,\mbox{expit}(\theta_i))\times \phi(\theta_i|\mu, \tau^2),
+$$
+
+em que $\phi(\cdot|\mu, \tau^2)$ é a função densidade normal.
+
+\framebreak
+
+- Então, combinando os estágios 2 e 3 do modelo, vê-se que os hiperparâmetros $\mu$ e $\tau^2$ possuem as seguintes distribuições condicionais:
+
+$$
+\mu|\boldsymbol{\theta}, \tau^2, \mathbf{y} \sim N\left(\frac{\sigma^2_{\mu}}{\sigma^2_{\mu} + \tau^2}\overline{\theta} + \frac{\tau^2}{\sigma^2_{\mu} + \tau^2}\mu_0,\ \frac{\tau^2\sigma^2_{\mu}}{\sigma^2_{\mu} + \tau^2} \right)
+$$
+
+e
+
+$$
+\tau^2|\boldsymbol{\theta}, \mu, \mathbf{y} \sim GaI\left(a + \frac{n}{2},\ b + \frac{1}{2}\sum_{i=1}^n{[\theta_i - \mu]^2}\right),
+$$
+
+em que $\overline{\theta} = \frac{1}{n}\sum_{i=1}^n{\theta_i}$.
+
+\framebreak
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='90%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'quadro_preto.jpg'))
+
+```
+
+\framebreak
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='90%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'quadro_preto.jpg'))
+
+```
+
+# Esquema MCMC {.allowframebreaks}
+
+- Dado um valor inicial nos hiperparâmetros $\mu$ e $\tau^2$, use $n$ passos de Metropolis-Hastings independentes para simular valores das taxas transformadas $\theta_i$.
+    - Podemos utilizar uma cadeia de __passeio aleatório__ com a densidade de incremento $N(0, c_T)$, em que o desvio padrão $c$ é parâmetro de \structure{\emph{tuning}}.
+- Em seguida, dados os valores simulados de $\theta_i$, simule $\mu$ e $\tau^2$ das distribuições _a posteriori_ gama invertida e normal, em que se está condicionando aos valores simulados mais recentemente.
+- Este ciclo simula uma cadeia de Markov que converge para a distribuição _a posteriori_ conjunta de $\boldsymbol{\theta}$, $\mu$ e $\tau^2$.
+    + Mais uma vez estamos utilizando o \structure{amostrador de Gibbs com passos de M-H} (aqui o __M-H passeio aleatório__).
+- Após descartar um conjunto de iterações de burn-in, a amostra simulada restante é tomada como uma amostra da distribuição _a posteriori_ conjunta.
+
+## (M-H passeio aleatório) {.allowframebreaks}
+
+- Seja a distribuição proposta, $q(y,x) = q(y|x)$ tal que
+
+$$
+y = x + \varepsilon,
+$$
+
+em que $\varepsilon ~ f$ e $f$ é uma densidade de probabilidade simétrica em 0. 
+
+- Dada esta definição, temos que
+
+$$
+q(y|x) = f(\varepsilon)
+$$
+
+e
+
+$$
+q(x|y) = f(-\varepsilon) = f(\varepsilon).
+$$
+
+- Porque a proposta $q(y|x)$ é simétrica em $x$ e $y$, a probabilidade de aceitação do Metropolis-Hastings $\rho(x, y)$ simplifica
+
+\begin{eqnarray*}
+\rho(x, y) &=& \min\left\{\frac{g(y)q(x|y)}{g(x)q(y|x)}, 1 \right\}\\
+&=& \min\left\{\frac{g(y)}{g(x)}, 1 \right\}.
+\end{eqnarray*}
+
+\framebreak
+
+Dado o estado atual $x$, o algoritmo de Metropolis-Hastings procede da seguinte forma:
+
+1. Simular $\varepsilon \sim f$ e faça $y = x + \varepsilon$.
+2. Calcule a probabilidade de aceitação $\rho(x, y) = \min\left\{\frac{g(y)}{g(x)}, 1 \right\}$.
+3. Aceite $y$ com probabilidade $\rho(x, y)$, caso contrário, continue em $x$.
+
+Deve-se notar que esta forma do algoritmo Metropolis-Hastings era a forma original do \structure{algoritmo Metropolis}.
+
+# Implementação em `R` {.allowframebreaks}
+
+- Considere o uso do algoritmo MCMC básico descrito na seção anterior com os valores dos hiperparâmetros definidos em $\mu_0 = 0$, $\sigma^2_{\mu} = 1.000$, $a = 5$ e $b = 1$.
+    - Esses valores refletem crenças _a priori_ relativamente __vagas__ sobre a localização dos parâmetros de segundo estágio.
+
+- A seguir, carregamos os dados do arquivo `Tsutakawa1985.txt`.
+
+\framebreak
+
+\footnotesize
+
+```{r carrega-dados, echo=TRUE, message=FALSE, warning=FALSE}
+
+library(readr)
+library(dplyr)
+
+taxasMiss <- read_delim(
+  file = here::here("dados",
+                    "Tsutakawa1985.txt"),
+  delim = "\t", escape_double = FALSE,
+  trim_ws = TRUE)
+
+taxasMiss
+
+```
+
+\framebreak
+
+\scriptsize
+
+```{r gibbs, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+library(invgamma)
+
+# Configuração
+
+mu_0 <- 0
+sigma2_mu <- 1000
+a <- 5
+b <- 1
+c_T <- 1.5
+
+n <- length(taxasMiss$y)
+M <- 10000
+burnin <- 10000
+k <- 10
+
+cadeia_post <- matrix(0, nrow = M, ncol = n + 2)
+colnames(cadeia_post) <- c(paste0("theta_", 1:n), "mu", "tau2")
+
+# Valores iniciais
+theta <- log( (taxasMiss$y + 1/2)/(taxasMiss$N - taxasMiss$y + 1/2) )
+mu <- 0
+tau2 <- 1
+
+cadeia_post[1,] <- c(theta, mu, tau2)
+
+```
+
+\framebreak
+
+\tiny
+
+```{r gibbs1, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+# Amostrador de Gibbs (burnin)
+
+for (t in 1:burnin){
+
+  # Passos de M-H passeio aleatório
+  theta_cand <- theta + 
+    rnorm(n = n, mean = rep(0, n), sd = 1)
+  
+  razao_a <- ( dbinom(x = taxasMiss$y, size = taxasMiss$N,
+    prob = (exp(theta_cand)/(1 + exp(theta_cand))) ) * 
+    dnorm(x = theta_cand, mean = mu, sd = sqrt(tau2)) )/
+    ( dbinom(x = taxasMiss$y, size = taxasMiss$N,
+    prob = (exp(theta)/(1 + exp(theta))) ) * 
+    dnorm(x = theta, mean = mu, sd = sqrt(tau2)) )
+  
+  rho <- apply(X = data.frame(razao_a),
+               MARGIN = 1,
+               FUN = function(x){min(x, 1)})
+  u <- runif(n = n, min = 0, max = 1)
+  theta <- ifelse(u <= rho, theta_cand, theta)
+  
+  mu <- rnorm(n = 1,
+              mean = (sigma2_mu/(sigma2_mu + tau2)) * mean(theta) +
+                (sigma2_mu/(sigma2_mu + tau2)) * mu_0,
+              sd = sqrt( (sigma2_mu*tau2)/(sigma2_mu + tau2) ) )
+  
+  tau2 <- rinvgamma(n = 1,
+                    shape = a + n/2,
+                    rate = b + (1/2) * sum( (theta - mu)^2 ))
+}
+
+```
+
+\framebreak
+
+```{r gibbs1.2, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+for (t in 1:(k*M)){
+  # Passos de M-H passeio aleatório
+  theta_cand <- theta + 
+    rnorm(n = n, mean = rep(0, n), sd = 1)
+  
+  razao_a <- ( dbinom(x = taxasMiss$y, size = taxasMiss$N,
+    prob = (exp(theta_cand)/(1 + exp(theta_cand))) ) * 
+    dnorm(x = theta_cand, mean = mu, sd = sqrt(tau2)) )/
+    ( dbinom(x = taxasMiss$y, size = taxasMiss$N,
+    prob = (exp(theta)/(1 + exp(theta))) ) * 
+    dnorm(x = theta, mean = mu, sd = sqrt(tau2)) )
+  
+  rho <- apply(X = data.frame(razao_a),
+               MARGIN = 1,
+               FUN = function(x){min(x, 1)})
+  u <- runif(n = n, min = 0, max = 1)
+  theta <- ifelse(u <= rho, theta_cand, theta)
+  
+  mu <- rnorm(n = 1,
+              mean = (sigma2_mu/(sigma2_mu + tau2)) * mean(theta) +
+                (sigma2_mu/(sigma2_mu + tau2)) * mu_0,
+              sd = sqrt( (sigma2_mu*tau2)/(sigma2_mu + tau2) ) )
+  
+  tau2 <- rinvgamma(n = 1,
+                    shape = a + n/2,
+                    rate = b + (1/2) * sum( (theta - mu)^2 ))
+  
+  if (t %% k == 0) {cadeia_post[(t/k),] <- c(theta, mu, tau2)}
+}
+
+```
+
+\framebreak
+
+```{r mcmc_converge, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center', out.width="95%"}
+
+par(mfrow = c(3,2))
+
+plot(cadeia_post[,"mu"], type = "l", col = "steelblue",
+     ylab = expression(mu), xlab = "t",
+     main = "")
+
+acf(cadeia_post[,"mu"], main = expression(mu) )
+
+plot(cadeia_post[,"tau2"], type = "l", col = "steelblue",
+     ylab = expression(tau^2), xlab = "t",
+     main = "")
+
+acf(cadeia_post[,"tau2"], main = expression(tau^2))
+
+plot(cadeia_post[,"theta_1"], type = "l", col = "steelblue",
+     ylab = expression(theta[1]), xlab = "t",
+     main = "")
+
+acf(cadeia_post[,"theta_1"], main = expression(theta[1]))
+
+```
+
+\framebreak
+
+```{r inferencia, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center', out.width="95%"}
+
+par(mfrow = c(1,2))
+
+hist(cadeia_post[,"mu"], probability = TRUE,
+     breaks = 40,
+     col = "steelblue",
+     border = "white",
+     xlab = expression(mu),
+     ylab = "Densidade",
+     main = "")
+
+hist(cadeia_post[,"tau2"], probability = TRUE,
+     breaks = 40,
+     col = "steelblue",
+     border = "white",
+     xlab = expression(tau^2),
+     ylab = "Densidade",
+     main = "")
+
+```
+
+\framebreak
+
+```{r inferencia2, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center', out.width="90%"}
+
+par(mfrow = c(1,2))
+
+hist(cadeia_post[,"theta_1"], probability = TRUE,
+     col = "steelblue",
+     border = "white",
+     xlab = expression(theta[1]),
+     ylab = "Densidade",
+     main = "")
+
+hist(cadeia_post[,"theta_84"], probability = TRUE,
+     col = "steelblue",
+     border = "white",
+     xlab = expression(theta[84]),
+     ylab = "Densidade",
+     main = "")
+
+```
+
+\framebreak
+
+\footnotesize
+
+- E os $p_i$?
+
+```{r inferencia3, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center', out.width="90%"}
+
+par(mfrow = c(1,2))
+
+hist(x = exp(cadeia_post[,"theta_1"])/(1 + exp(cadeia_post[,"theta_1"])),
+     probability = TRUE,
+     col = "lightsalmon",
+     border = "white",
+     xlab = expression(p[1]),
+     ylab = "Densidade",
+     main = "")
+
+hist(x = exp(cadeia_post[,"theta_84"])/(1 + exp(cadeia_post[,"theta_84"])),
+     probability = TRUE,
+     col = "lightsalmon",
+     border = "white",
+     xlab = expression(p[84]),
+     ylab = "Densidade",
+     main = "")
+
+```
+
+\framebreak
+
+```{r inferencia4, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+
+# Resumo da distribuição 
+# a posteriori das taxas de scram
+
+p_post <- data.frame(
+  cidade = factor(taxasMiss$Cidade),
+  y = taxasMiss$y,
+  N = taxasMiss$N,
+  EMV = taxasMiss$y/taxasMiss$N,
+  media = colMeans( exp(cadeia_post[,1:n])/(1 + exp(cadeia_post[,1:n])) ) )
+
+p_post$li95 <- apply(X = exp(cadeia_post[,1:n])/(1 + exp(cadeia_post[,1:n])),
+                          MARGIN = 2,
+                          FUN = quantile, probs = 0.025)
+
+p_post$ls95 <- apply(X = exp(cadeia_post[,1:n])/(1 + exp(cadeia_post[,1:n])),
+                          MARGIN = 2,
+                          FUN = quantile, probs = 0.975)
+
+head(p_post)
+
+```
+
+\framebreak
+
+```{r inferencia5, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center', out.width="95%"}
+
+library(ggplot2)
+
+p <- ggplot(data = p_post) +
+  geom_point(mapping = 
+               aes(x = cidade, #reorder(cidade, desc(media)), 
+                   y = media),
+             color = "steelblue") +
+  geom_point(mapping = 
+               aes(x = cidade, #reorder(cidade, desc(media)),
+                   y = EMV),
+             shape = 23,
+             fill = "lightsalmon", color = "lightsalmon") +
+  geom_errorbar(mapping = 
+                  aes(x = cidade, #reorder(cidade, desc(media)),
+                      ymin = li95, ymax = ls95),
+                width=.2, position = position_dodge(.9)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(x = "Cidade", y = "Taxa de óbito", title = "Estimativas de Taxa de óbito por câncer de estômago em homens com idades\n entre 45 e 64 anos das 84 maiores cidades do Missouri (média a posteriori e\n intervalo de credibilidade de 95%; *EMV em vermelho)")
+
+p
+
+```
+
+\framebreak
+
+\normalsize
+
+- Note que para as cidades menores, estimativas mais precisas são obtidas quando estas tomam emprestado informações das demais cidades.
+    + Este é chamado de \structure{``borrowing strength''} nos modelos bayesianos hierárquicos.
+
+## Para casa
+
+- Rodar os códigos dos exemplos de aula.
+    + Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+
+## Próxima aula
+
+- `OpenBugs` e `Jags`.
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Bons estudos!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Statistically-Insignificant-final07.jpg'))
+
+```
+
