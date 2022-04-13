@@ -1,4 +1,4 @@
-## ----carrega-dados, echo=TRUE, message=FALSE, warning=FALSE----------------------------------
+## ----carrega-dados, echo=TRUE, message=FALSE, warning=FALSE-------------------------
 
 library(readr)
 library(dplyr)
@@ -13,7 +13,7 @@ taxasMiss
 
 
 
-## ----gibbs, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE-------------------------------
+## ----gibbs, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE----------------------
 
 library(invgamma)
 
@@ -42,7 +42,7 @@ cadeia_post[1,] <- c(theta, mu, tau2)
 
 
 
-## ----gibbs1, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE------------------------------
+## ----gibbs1, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE---------------------
 
 # Amostrador de Gibbs (burnin)
 
@@ -50,7 +50,7 @@ for (t in 1:burnin){
 
   # Passos de M-H passeio aleatório
   theta_cand <- theta + 
-    rnorm(n = n, mean = rep(0, n), sd = 1)
+    rnorm(n = n, mean = rep(0, n), sd = rep(c_T, n))
   
   razao_a <- ( dbinom(x = taxasMiss$y, size = taxasMiss$N,
     prob = (exp(theta_cand)/(1 + exp(theta_cand))) ) * 
@@ -77,12 +77,12 @@ for (t in 1:burnin){
 
 
 
-## ----gibbs1.2, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE----------------------------
+## ----gibbs1.2, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE-------------------
 
 for (t in 1:(k*M)){
   # Passos de M-H passeio aleatório
   theta_cand <- theta + 
-    rnorm(n = n, mean = rep(0, n), sd = 1)
+    rnorm(n = n, mean = rep(0, n), sd = rep(c_T, n))
   
   razao_a <- ( dbinom(x = taxasMiss$y, size = taxasMiss$N,
     prob = (exp(theta_cand)/(1 + exp(theta_cand))) ) * 
@@ -199,7 +199,7 @@ hist(x = exp(cadeia_post[,"theta_84"])/(1 + exp(cadeia_post[,"theta_84"])),
 
 
 
-## ----inferencia4, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE-------------------------
+## ----inferencia4, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE----------------
 
 # Resumo da distribuição 
 # a posteriori das taxas de scram

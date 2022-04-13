@@ -31,3 +31,9 @@ knitr::purl(input = input,
 
 # rmarkdown::render(input = input, 
 #                   output_format = "powerpoint_presentation")
+# 
+# options(knitr.purl.inline = TRUE)
+# knitr::purl(input = here::here("material_de_aula", "exercicios", "2022_01_ava_pontual_resolucao.Rmd"),
+#             output = here::here("RScripts", "2022_01_ava_pontual_resolucao.R"),
+#             documentation = 1,
+#             encoding = "UTF-8")

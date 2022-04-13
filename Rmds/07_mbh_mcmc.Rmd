@@ -229,7 +229,7 @@ for (t in 1:burnin){
 
   # Passos de M-H passeio aleatório
   theta_cand <- theta + 
-    rnorm(n = n, mean = rep(0, n), sd = 1)
+    rnorm(n = n, mean = rep(0, n), sd = rep(c_T, n))
   
   razao_a <- ( dbinom(x = taxasMiss$y, size = taxasMiss$N,
     prob = (exp(theta_cand)/(1 + exp(theta_cand))) ) * 
@@ -263,7 +263,7 @@ for (t in 1:burnin){
 for (t in 1:(k*M)){
   # Passos de M-H passeio aleatório
   theta_cand <- theta + 
-    rnorm(n = n, mean = rep(0, n), sd = 1)
+    rnorm(n = n, mean = rep(0, n), sd = rep(c_T, n))
   
   razao_a <- ( dbinom(x = taxasMiss$y, size = taxasMiss$N,
     prob = (exp(theta_cand)/(1 + exp(theta_cand))) ) * 

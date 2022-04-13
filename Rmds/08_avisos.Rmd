@@ -1,0 +1,47 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+# subtitle: "Modelos bayesianos hierárquicos - exemplo: dados de mortalidade de câncer"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+## Avisos
+
+__Avaliação parcial 1:__
+
++ 2 exercícios práticos:
+    - um referente ao algoritmo de Metropolis-Hastings;
+    - um referente ao amostrador de Gibbs;
++ Pode ser feito em duplas;
++ Entrega: 22/04/2022 às 23hs 59min;
+
+
+## Para casa
+
+- Revisar a avaliação pontual 1.
+    + Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+
+## Próxima aula
+
+- `OpenBugs` e `Jags`.
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Bons estudos!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'Statistically-Insignificant-final07.jpg'))
+
+```
+
