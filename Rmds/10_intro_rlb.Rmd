@@ -1,0 +1,365 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+subtitle: "Introdução à regressão linear bayesiana"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+# Revisão da Regressão Linear {.allowframebreaks}
+
+- Lembre-se de que, na análise de regressão, temos duas ou mais variáveis que podem ser medidas nos mesmos indivíduos \structure{(unidades)}.
+- Desejamos usar uma ou mais delas, as \structure{variáveis preditoras} (também chamadas de __variáveis independentes__ ou __covariáveis__), para \structure{explicar} ou \structure{prever} uma \structure{variável resposta} (também chamada de __variável desfecho__ ou __variável dependente__).
+    - Como definimos qual variável é a resposta e quais são preditores depende de nossa questão de pesquisa.
+
+\framebreak
+
+```{r echo=FALSE, eval=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width='70%', out.height='70%', purl=FALSE}
+
+plot(mtcars$hp, mtcars$mpg, pch = 16, col = "steelblue",
+     xlab = "Potência do motor (HP)",
+     ylab = "Consumo de combustível (MPG)")
+
+```
+
+\framebreak
+
+- Na regressão linear, a variável resposta é quantitativa.
+- Na regressão linear simples, há apenas uma variável preditora e a relação entre a variável resposta e o preditor é aproximadamente linear.
+- Normalmente, a notação $Y$ é usada para a variável resposta e $X$ para um preditor, de modo que $y_i$ e $x_i$ denotam os valores observados da resposta e do preditor para o $i$-ésimo indivíduo em um conjunto de dados.
+
+- A equação de regressão populacional com uma covariável é
+
+$$
+Y_i = \beta_0 + \beta_1X_i + \epsilon_i,
+$$
+
+em que $\beta_0$ é o \structure{intercepto} (geralmente definido como o valor esperado de $Y$ quando $X = 0$) e $\beta_1$ é a \structure{inclinação} (a diferença esperada entre dois valores de $Y$ cujos valores de $X$ correspondentes diferem em uma unidade).
+
+\framebreak
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='70%', out.height='70%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'linear-regression-small.png'))
+
+```
+
+## Centralizando a Covariável {.allowframebreaks}
+
+<!-- Quando todos os valores possíveis da covariável são do mesmo sinal e estão longe de zero, a definição matemática do intercepto pode não fazer sentido substancialmente. Por exemplo, suponha que a população de interesse seja homens adultos, a covariável seja altura em polegadas e a variável de resposta seja peso em libras. Então, embora a interceptação seja uma construção matemática perfeitamente válida e seja necessária para que a linha fique no lugar certo, a noção de um adulto com altura 0 polegadas não faz sentido. -->
+<!-- Nesses casos, uma prática comum é centralizar a covariável antes de usar os dados da amostra para estimar os coeficientes de regressão e a variância.  -->
+
+- \structure{Centralizar} significa simplesmente calcular a média amostral da covariável e __subtrair essa média de cada valor de covariável__. Em símbolos, antes da centralização, o modelo a ser ajustado é
+
+$$
+Y_i = \beta_0 + \beta_1X_i + \epsilon_i,
+$$
+
+mas com a centralização, torna-se
+
+$$
+Y_i = \beta_0^{*} + \beta_1(X_i - \overline{X}) + \epsilon_i.
+$$
+
+- A interpretação e o valor da inclinação $\beta_1$ permanecem inalterados pela centralização.
+- No entanto, a centralização dá ao intercepto um significado diferente e geralmente um valor muito diferente. Podemos ver isso reorganizando o lado direito da expressão anterior.
+
+$$
+Y_i = (\beta_0^{*} - \beta_1\overline{X}) + \beta_1X_i+ \epsilon_i.
+$$
+
+- O intercepto no modelo centrado é o valor esperado da variável resposta quando a covariável centrada é $0$.
+    + Isto é, quando a covariável na escala original tem o valor típico $\overline{X}$ em vez do valor irracional de $0$. Assim, este tem uma interpretação significativa.
+
+- Uma \structure{vantagem adicional da centralização} de covariáveis para a inferência bayesiana é que a centralização pode melhorar a convergência de __amostradores MCMC__ para ajustar modelos complicados de regressão bayesiana.
+
+# Introdução à regressão linear simples bayesiana
+
+## Introdução à RLS bayesiana {.allowframebreaks}
+
+- A regressão linear simples bayesiana está intimamente relacionada aos modelos normais (para estimação de uma média populacional).
+- A diferença é que ao invés de uma única média populacional, cada observação $i$ tem sua própria média que depende dos coeficientes de regressão e do valor $i$ da covariável.
+- A seguir, assumiremos que a covariável foi centralizada, pois isso simplifica alguns cálculos.
+
+\framebreak
+
+- A verossimilhança pode ser escrita distributivamente da seguinte forma:
+
+$$
+y_i|x_i,\beta_0,\beta_1,\sigma^2 \stackrel{ind.}{\sim} N(\beta_0 + \beta_1(x_i - \overline{x}), \sigma^2),\ i = 1, \ldots, n.
+$$
+
+- O parâmetro de maior interesse na regressão linear simples bayesiana geralmente é a inclinação, $\beta_1$. Assim, precisamos encontrar a densidade _a posteriori_ conjunta de todos os três parâmetros de regressão e então integrar $\beta_0$ e $\sigma^2$ para obter a densidade marginal _a posteriori_ de $\beta_1$.
+
+## Distribuição _a priori_ não informativa padrão {.allowframebreaks}
+
+- Consideraremos primeiro a \structure{distribuição \emph{a priori} não informativa padrão} que produz inferência bayesiana análoga aos resultados frequentistas.
+- Como nos modelos com verossimilhança normal em que tanto a média quanto a variância são desconhecidas, a distribuição _a priori_ não informativa padrão na regressão bayesiana é o produto de distribuição _a priori_ \structure{impróprias} independentes nos parâmetros relacionados à média e no parâmetro de variância.
+- Os parâmetros relacionados às médias são os coeficientes de regressão $\beta_0$ e $\beta_1$.
+
+\framebreak
+
+- Multiplicando distribuições _a priori_ _flat_ (proporcionais a uma constante ao longo de toda a reta real) em ambos os coeficientes vezes uma distribuição _a priori_ \structure{gama inversa} com ambos os parâmetros tendendo a $0$ para $\sigma^2$
+
+$$
+p(\beta_0,\beta_1,\sigma^2) \propto 1/\sigma^2 , -\infty < \beta_0, \beta_1 < \infty,\ 0 < \sigma^2 < \infty.
+$$
+
+- Aproximamos esta distribuição _a priori_ com distribuições _a priori_ __normais vagas__ (no \structure{OpenBUGS} "`dflat()`") em $\beta_0$ e $\beta_1$ e distribuição _a priori_ gama muito vaga no parâmetro de precisão (o \structure{OpenBUGS} utiliza o parâmetro de precisão na parametrização da distribuição normal).
+
+\framebreak
+
+As três estatísticas suficientes simplificam a derivação das distribuições _a posteriori_ conjuntas e marginais dos parâmetros de regressão.
+
+\begin{eqnarray*}
+\widehat{\beta}_0 &=& \overline{y},\\
+\widehat{\beta}_1 &=& \frac{\sum_i{(x_i - \overline{x})(y_i - \overline{y})}}{\sum_i{(x_i - \overline{x})^2}},\\
+SSR &=& \sum_i{\left[y_i - \widehat{\beta}_0  - \widehat{\beta}_1(x_i - \overline{x})\right]^2}.
+\end{eqnarray*}
+
+- Lembre-se também de que a variância amostral na regressão é $s^2 = \frac{SSR}{(n - 2)}$.
+
+\framebreak
+
+- Com a distribuição _a priori_ não informativa padrão e uma covariável centralizada, a densidade _a posteriori_ conjunta é
+
+\begin{eqnarray*}
+p(\beta_0,\beta_1,\sigma^2|y) \propto \frac{1}{\sigma^2} \frac{1}{(\sigma^2)^{\left(\frac{n}{2}\right)}} \exp\left[ \frac{-\sum_i{(y_i - \beta_0 - \beta_1(x_i - \overline{x}))^2}}{2\sigma^2}\right]\\
+= \frac{1}{\sigma^2} \frac{1}{(\sigma^2)^{\left(\frac{n + 2}{2}\right)}} \exp\left[-\frac{SSR + n(\beta_0 - \widehat{\beta}_0)^2 - \sum_i{(x_i - \overline{x})^2}(\beta_1 - \widehat{\beta}_1)^2}{2\sigma^2}\right].
+\end{eqnarray*}
+
+\framebreak
+
+- Se integrarmos a distribuição _a posteriori_ com respeito a $\beta_1$, obtemos
+
+$$
+p(\beta_0, \sigma^2|y) \propto \frac{1}{(\sigma^2)^{\left(\frac{n+1}{2}\right)}} \exp\left[-\frac{SSR + n(\beta_0 - \widehat{\beta}_0)^2}{2\sigma^2}\right].
+$$
+
+- Para obter a densidade marginal _a posteriori_ de $\beta_0$, devemos integrar a expressão anterior com respeito a $\sigma^2$ que, após alguma álgebra, produz
+
+$$
+\beta_0|y \sim t\left(\widehat{\beta}_0, \frac{s^2}{n}, n-2\right),
+$$
+uma distribuição com média $widehat{\beta}_0$, parâmetro de escala $s^2/n$ e graus de liberdade $n-2$.
+
+\framebreak
+- Um par semelhante de integrações leva à densidade marginal _a posteriori_ que é nossa principal preocupação:
+
+$$
+\beta_1|y \sim t\left(\widehat{\beta}_1, \frac{s^2}{\sum_i{(x_i - \overline{x})^2}}, n-2\right).
+$$
+
+- Com base nessas distribuições $t$, os intervalos de credibilidade bayesianos para $\beta_0$ e $\beta_1$ terão exatamente os mesmos limites que os intervalos de confiança $t$ frequentistas para os mesmos parâmetros.
+- E finalmente,
+
+$$
+\sigma^2|y \sim GI\left(\frac{n-2}{2} , \frac{SSR}{2}\right).
+$$
+
+\framebreak
+
+### Verificando se a densidade _a posteriori_ é própria
+
+- Lembre-se de que sempre que um estatístico usar uma distribuição _a priori_ imprópria, ele deve verificar se os dados fornecem informações suficientes para tornar a densidade _a posteriori_ própria.
+- No caso da regressão linear simples e da distribuição _a priori_ conjunta imprópria padrão, os requisitos de dados são que o __tamanho da amostra__ $n$ seja estritamente maior que dois, e que nem todos os __valores das covariáveis__ sejam iguais.
+
+## Exemplo {.allowframebreaks}
+
+- \structure{(mtcars)} Dados extraídos da revista _Motor Trend US_ de 1974 e abrangem o consumo de combustível e 10 aspectos do _design_ e desempenho do automóvel para 32 modelos (de 1973 a 1974).
+
+- Vamos nos concentrar na relação \structure{Consumo de combustível (MPG)} e \structure{Potência do motor (HP)}.
+
+```{r mtcars, echo=FALSE, eval=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width='50%', out.height='50%', purl=TRUE}
+
+plot(mtcars$hp, mtcars$mpg, pch = 16, col = "steelblue",
+     xlab = "Potência do motor (HP)",
+     ylab = "Consumo de combustível (MPG)")
+
+mod.freq <- lm(mpg ~ hp,
+               data = mtcars)
+
+```
+
+\framebreak
+
+- O modelo linear é assumido
+
+$$
+Y_i = \beta_0 + \beta_1X_i + \epsilon_i,
+$$
+em que $Y$ representa a variável resposta "Consumo de combustível (MPG)" e $X$ representa a variável explicativa "Potência do motor (HP)".
+
+- Vamos utilizar o \structure{OpenBUGS} para obter uma amostra da distribuição _a posteriori_ conjunta de $\beta_0$, $\beta_1$ e $\sigma^2$ (variância do termo de erro aleatório; ou, de forma equivalente, $\sigma$).
+
+\framebreak
+
+\footnotesize
+
+```{r OB.model, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+
+model
+{
+  for (i in 1:N) {
+    mu[i] <- beta0 + beta1 * xcent[i] # media de y
+    y[i] ~ dnorm( mu[i], tausq ) # dist de y (verossimilhança)
+  }
+  beta0 ~ dflat() # dist. a priori beta0
+  beta1 ~ dflat() # dist. a priori beta1
+  tausq ~ dgamma( 0.001, 0.001) # dist. a priori tau (precisao)
+  sigma <- 1/sqrt(tausq) # desvio padrao da regressao
+}
+
+```
+
+\normalsize
+
+\framebreak
+
+- Vamos "chamar" o \structure{OpenBUGS} do `R` via pacote `R2OpenBUGS`.
+- Para isso, é preciso salvar o script do modelo em um arquivo `.txt` (`rlb.txt`).
+- __Observação:__
+    - O `R2OpenBUGS` funciona como uma interface para o \structure{OpenBUGS} no `R`.
+    - Quem gera a amostra da distribuição _a posteriori_ do modelo é o \structure{OpenBUGS}.
+    - Logo este precisa estar instalado no computador).
+
+\framebreak
+
+\scriptsize
+
+```{r R2OB, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+
+# install.packages("R2OpenBUGS")
+library(R2OpenBUGS)
+
+# Objeto de dados
+N <- nrow(mtcars)
+y <- mtcars$mpg
+# centralizando a covariável
+xcent <- mtcars$hp - mean(mtcars$hp)
+data <- list("N", "y", "xcent")
+
+# Valores iniciais
+inits <- function(){
+  list(beta0 = rnorm(1, 0, 100),
+       beta1 = rnorm(1, 0, 100),
+       tausq = 5)
+}
+
+# Rodando o modelo/gerando as cadeias
+rlb.sim <- bugs(data = data, inits = inits,
+                model.file = here::here("material_de_aula",
+                                        "OpenBugsExemplos", "rlb.txt"),
+                parameters = c("beta0", "beta1", "sigma"),
+                n.chains = 3, n.iter = 10000)
+
+```
+
+\framebreak
+
+```{r R2OB.saida, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+
+print(rlb.sim)
+
+```
+
+\framebreak
+
+\footnotesize
+
+```{r reg.plot, echo=FALSE, eval=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width='80%', out.height='80%', purl=TRUE}
+
+library(dplyr)
+
+sim.resumo <- rlb.sim$sims.matrix %>% 
+  as.data.frame() %>% 
+  select(beta0, beta1) %>% 
+  summarise_all(list(mean, quantile), probs = c(.025, .975))
+
+xcent <- mtcars$hp - mean(mtcars$hp)
+xcent <- c(min(xcent) - 10, sort(xcent), max(xcent) + 10)
+
+y1 <- sim.resumo$beta0_fn2[1] +  sim.resumo$beta1_fn2[1] * xcent
+y2 <- sim.resumo$beta0_fn2[2] +  sim.resumo$beta1_fn2[2] * xcent
+
+plot(mtcars$hp - mean(mtcars$hp), mtcars$mpg,
+     pch = 16, col = "steelblue",
+     xlab = "Potência do motor (centralizada)",
+     ylab = "Consumo de combustível (MPG)")
+
+polygon(c(xcent, rev(xcent)), c(y2, rev(y1)),
+        col = rgb(red = 255, green = 160, blue = 122,
+                  alpha = round(0.3*255), max = 255),
+        border =  F)
+
+abline(a = sim.resumo$beta0_fn1[1],
+       b = sim.resumo$beta1_fn1[1],
+       col = "red", lwd = 2)
+
+```
+
+\framebreak
+
+```{r R2OB.args, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+
+rlb.sim <- bugs(data = data, inits = inits,
+                model.file = here::here("material_de_aula",
+                                        "OpenBugsExemplos", "rlb.txt"),
+                parameters = c("beta0", "beta1", "sigma"),
+                n.chains = 3, n.iter = 10000,
+                n.burnin = 1000,
+                n.thin = 10,
+                codaPkg = TRUE)
+
+```
+
+\framebreak
+
+```{r R2OB.coda, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.align='center', out.height="70%", out.width= "70%"}
+
+library(coda)
+
+codaobject <- read.bugs(rlb.sim)
+plot(codaobject)
+
+```
+
+\normalsize
+
+## Densidades _a priori_ informativas para coeficientes de regressão e variância {.allowframebreaks}
+
+- E se tivermos informações _a priori_ que gostaríamos de incluir em nosso modelo bayesiano?
+- O procedimento mais simples (e provavelmente o mais comumente usado) é assumir independência _a priori_ entre $\beta_0$, $\beta_1$ e $\sigma^2$ e colocar distirbuições _a priorei_ \structure{normais próprias independentes} em $\beta_0$ e $\beta_1$ e uma distribuição _a priori_ \structure{gama inversa própria} na variância $\sigma^2$ (ou equivalentemente, uma distribuição _a priori_ \structure{gama} para o parâmetro de precisão [$1/\sigma^2$]).
+- O produto dessas três densidades _a priori_ não é uma distribuição _a priori_ conjugada, porque a densidade _a posteriori_ resultante não será fatorada em três densidades independentes das mesmas famílias.
+    + Um método de aproximação (por exemplo, MCMC) será necessário para avaliar a distribuição _a posteriori_ resultante.
+
+## Para casa
+
+- Revisar a aula de hoje (passos de instalação do OpenBUGS, rodar o exemplo).
+- Implemente no `R` modelo do exemplo da aula de hoje. Compare com os resultados encontrados no OpenBUGS.
+- Utilize o OpenBUGS para rodar o modelo do exemplo dos dados de taxas de scram em usinas nucleares (aulas 08 e 09). Compare com os resultados encontrados pela a implementação em `R` feita em aula.
+- Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+
+## Próxima aula
+
+- Modelos lineares.
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Bons estudos!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='30%', out.height='30%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'bugs_logo.png'))
+
+```
+

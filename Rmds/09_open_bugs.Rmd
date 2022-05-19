@@ -1,0 +1,143 @@
+---
+title: "MAT02034 - Métodos bayesianos para análise de dados"
+subtitle: "Introdução ao OpenBUGS"
+fontsize: 10pt
+author: |
+  | Rodrigo Citton P. dos Reis
+  | `citton.padilha@ufrgs.br`
+institute: |
+  | \textsc{Universidade Federal do Rio Grande do Sul}
+  | \textsc{Instituto de Matemática e Estatística}
+  | \textsc{Departamento de Estatística}
+date: |
+  | Porto Alegre, 2022
+---
+
+# OpenBUGS: introdução {.allowframebreaks}
+
+## OpenBUGS {.allowframebreaks}
+
+- \structure{BUGS} é um _software_ para realizar __inferência Bayesiana usando amostragem Gibbs__ (\structure{B}ayesian inference \structure{U}sing \structure{G}ibbs \structure{S}ampling). 
+- O usuário fornece ao _software_ o __modelo__ (somente a(s) distribuição(ões) _a priori_ e a verossimilhança), os __dados__ e __valores iniciais__ (da cadeia de Markov); o _software_ gera uma sequência de realizações da distribuição _a posteriori_ do respectivo modelo.
+- Procedimento básico para executar a simulação:
+    + Comece em um conjunto arbitrário de valores iniciais;
+    + Descarte as realizações da cadeia do período de _burn-in_;
+    + Salve e analise a amostra (resumo numérico, gráficos, avaliação da convergência) de realizações do período estacionário.
+
+## OpenBUGS: primeiros passos {.allowframebreaks}
+
+- https://openbugs.net/ (não parece muito estável)
+- (Sugestão:) https://www.mrc-bsu.cam.ac.uk/software/bugs/openbugs/
+- Veja o artigo sobre o projeto BUGS^[Lunn D, Spiegelhalter D, Thomas A, Best N. The BUGS project: Evolution, critique and future directions. Stat Med. 2009 Nov 10;28(25):3049-67. doi: 10.1002/sim.3680. PMID: 19630097.] e o Manual do _software_ \structure{(no Moodle da disciplina)}.
+
+## OpenBUGS: primeiros passos {.allowframebreaks}
+
+\footnotesize
+
+1. Na página https://www.mrc-bsu.cam.ac.uk/software/bugs/openbugs/, na seção _Downloads_ escolha a opção de acordo com o seu sistema operacional (para esta aula: Windows!).
+2. Um arquivo .zip será baixado, com o arquivo "OpenBUGS323setup.exe". Clique neste arquivo para executá-lo. A seguinte janela de instalação aparecerá na tela
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='40%', out.height='40%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'OpenBugsSetup.png'))
+
+```
+
+3. Aceite os termos do __contrato de licença__ e siga com a instalação padrão (botão _"Next"_ até o fim do processo).
+
+\framebreak
+
+\normalsize
+
+O OpenBUGS possui uma interface gráfica:
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='40%', out.height='40%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'OpenBugsGUI.png'))
+
+```
+
+Por meio dela o usuário especifica o __modelo__, os __dados__ e __valores iniciais__ (através de arquivos de scripts). Além disso, a interface gráfica possui funcionalidades para analisar as saídas das cadeias geradas.
+
+# OpenBUGS: exemplo {.allowframebreaks}
+
+## Bombas: modelo hierárquico Poisson-gama conjugado {.allowframebreaks}
+
+- Considere os dados de falhas de 10 bombas de usinas de energia. Supõe-se que o número de falhas $x_i$ siga uma distribuição de Poisson
+
+$$
+x_i \sim Poisson(\theta_it_i),\ i = 1, \ldots, 10,
+$$
+
+em que $\theta_i$ é a taxa de falha da bomba $i$ e $t_i$ é o tempo de operação da bomba (expresso em unidade de 1000 horas). 
+
+\framebreak
+
+- Os dados são apresentados a seguir.
+
+| Bomba | $t_i$ | $x_i$ |
+|-------|-------|-------|
+| 1     | 94.5  | 5     |
+| 2     | 15.7  | 1     |
+| 3     | 62.9  | 5     |
+| 4     | 126   | 14    |
+| 5     | 5.24  | 3     |
+| 6     | 31.4  | 19    |
+| 7     | 1.05  | 1     |
+| 8     | 1.05  | 1     |
+| 9     | 2.1   | 4     |
+| 10    | 10.5  | 22    |
+
+\framebreak
+
+- Uma distribuição _a priori_ gama conjugada é adotada para as taxas de falha:
+
+$$
+\theta_i \sim Gama(\alpha, \beta),\ i = 1, \ldots, 10.
+$$
+
+- Suponha a seguinte especificação _a priori_ para os hiperparâmetros $\alpha$ e $\beta$
+
+\begin{eqnarray*}
+\alpha &\sim& Exponencial(1.0)\\
+\beta &\sim& Gama(0,1, 1,0)
+\end{eqnarray*}
+
+\framebreak
+
+- É possível mostrar que (para casa) a distribuição _a posteriori_ para $\beta$ é uma distribuição Gama, mas leva a uma distribuição _a posteriori_ não padrão para $\alpha$. 
+- O amostrador Gibbs pode ser utilizado para simular as densidades _a posteriori_ necessárias.
+
+- \structure{(Demonstração; arquivos no Moodle da disciplina)}
+
+## OpenBUGS e `R` {.allowframebreaks}
+
+- Na prática, o usuário deseja armazenar dados e analisar os resultados em `R` (ou Stata, SAS, etc.)
+- Depois de saber como usar o OpenBUGS, você pode ler a documentação desses pacotes do `R`:
+    + `R2OpenBUGS`, `BRugs`: estes pacotes permitem o usuário interagir com OpenBUGS dentro de `R`
+    + `CODA`: conjunto de ferramentas para avaliar a convergência e descrever resultados
+- É possível "chamar" o OpenBUGS do `R` para automatizar a análise bayesiana.
+
+## Para casa
+
+- Revisar a aula de hoje (passos de instalação do OpenBUGS, rodar o exemplo).
+- Implemente no `R` modelo do exemplo da aula de hoje. Compare com os resultados encontrados no OpenBUGS.
+- Utilize o OpenBUGS para rodar o modelo do exemplo dos dados de taxas de scram em usinas nucleares (aulas 08 e 09). Compare com os resultados encontrados pela a implementação em `R` feita em aula.
+- Trazer as dúvidas para o Fórum Geral do Moodle e para a próxima aula.
+
+## Próxima aula
+
+- Modelos lineares.
+
+## Por hoje é só!
+
+\begin{center}
+{\bf Bons estudos!}
+\end{center}
+
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width='30%', out.height='30%', purl=FALSE}
+
+knitr::include_graphics(here::here('images', 'bugs_logo.png'))
+
+```
+
